@@ -61,7 +61,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
             <div class="flex flex-col md:flex-row gap-6">
                   <div class="flex flex-col gap-2 w-full">
                     <label for="email1">Email</label>
-                    <input pInputText id="email1" [(ngModel)]="email1" type="text" />
+                    <input pInputText id="email1" [(ngModel)]="email1" required email/>
                   </div>
                   <div class="flex flex-col gap-2 w-full">
                     <label for="login">Login</label>
