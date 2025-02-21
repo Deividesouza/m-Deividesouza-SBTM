@@ -13,9 +13,11 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { OnInit } from '@angular/core';
 import { StatusService } from '../service/status.service';
 import { PerfilService } from '../service/perfil.service';
-import {Tiposservice} from '../service/tipos.service';
+import { Tiposservice } from '../service/tipos.service';
 import { Cidadesservice } from '../service/cidades.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -51,17 +53,17 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
             <div class="flex flex-col md:flex-row gap-6">
                   <div class="flex flex-col gap-2 w-full">
                     <label for="celular">Celular</label>
-                    <input pInputText id="celular" mask="(00) 00000 0000" [(ngModel)]="celular" type="tel" />
+                    <input pInputText id="celular" mask="(00) 00000-0000" [(ngModel)]="celular" type="tel" />
                   </div>
                   <div class="flex flex-col gap-2 w-full">
                     <label for="telefone">Telefone</label>
-                    <input pInputText id="telefone" mask="(00) 00000 0000" [(ngModel)]="telefone" type="tel" />  <!--Mascara tel -->
+                    <input pInputText id="telefone" mask="(00) 0000-0000" [(ngModel)]="telefone" type="tel" />  <!--Mascara tel -->
                   </div>
             </div>
             <div class="flex flex-col md:flex-row gap-6">
                   <div class="flex flex-col gap-2 w-full">
                     <label for="email1">Email</label>
-                    <input pInputText id="email1" [(ngModel)]="email1" required email/>
+                    <input pInputText id="email1" [(ngModel)]="email1" type="text" />
                   </div>
                   <div class="flex flex-col gap-2 w-full">
                     <label for="login">Login</label>
@@ -125,22 +127,14 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
               </div>
             </div>
             <div class="flex flex-col gap-6">
-              <div class="font-semibold text-xl">Upload de Arquivo</div>
-              <p-fileupload
-                name="demo[]"
-                (onUpload)="onUpload($event)"
-                [multiple]="true"
-                accept="image/*"
-                maxFileSize="1000000"
-                mode="advanced"
-                url="http://localhost:8080/api/upload"
-              >
-                <ng-template #empty>
-                  <div>Arraste e solte arquivos aqui para fazer upload.</div>
-                </ng-template>
-              </p-fileupload>
+                    <p-toolbar styleClass="mb-2">
+                            <div class="card flex flex-col gap-2" >
+                                <div class="font-semibold text-xl">Upload de Currículo</div>
+                                <input type="file" />
+                                <p-button label="Upload" ></p-button>
+                            </div>
+                    </p-toolbar>
             </div>
-          </div>
 
           <div class="card flex flex-col gap-4">
             <div class="font-semibold text-xl">Informações de Localização</div>
@@ -191,7 +185,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
             <div class="flex flex-col md:flex-row gap-6">
                   <div class="flex flex-col gap-2 w-full">
                     <label for="cnpj">CNPJ</label>
-                    <input pInputText id="celular" mask="(00) 00000 0000" [(ngModel)]="celular" type="tel" />
+                    <input pInputText id="CNPJ" mask="CPF_CNPJ" [(ngModel)]="celular" type="text" />
                   </div>
                   <div class="flex flex-col gap-2 w-full">
                     <label for="celular">Telefone de Contato</label>
@@ -248,7 +242,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
               <div class="font-semibold text-xl">Upload de Arquivo</div>
               <p-fileupload
                 name="demo[]"
-                (onUpload)="onUpload($event)"
+
                 [multiple]="true"
                 accept="image/*"
                 maxFileSize="1000000"
@@ -269,11 +263,13 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
                   class="mr-2"
                   (click)="onSubmit()"
                 ></p-button>
-              </ng-template>
+                 <p-button label="Listar" severity="primary" (click)="onVoltar()"></p-button>
+               </ng-template>
             </p-toolbar>
           </div>
         </div>
       </div>
+    </div>
     </p-fluid>
   `,
 })
@@ -326,7 +322,8 @@ export class FormLayout implements OnInit{
     private fb: FormBuilder,
     private readonly dropdownPerfil: PerfilService,
     private readonly dropdownTipos: Tiposservice,
-    private readonly dropdownCidade: Cidadesservice,  ){}
+    private readonly dropdownCidade: Cidadesservice,
+    private router: Router, ){}
 
   ngOnInit(): void {
     this.carregarStatus();
@@ -392,12 +389,12 @@ export class FormLayout implements OnInit{
     });
   }
 
-  onUpload(event: any) {
-    for (const file of event.files) {
-      this.uploadedFiles.push(file);
+    onVoltar() {
+        this.router.navigate(['/pages/crud']);
     }
-    this.messageService.add({ severity: 'info', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso' });
-  }
+
+
+
 
   reloadPage() {
     window.location.reload();
