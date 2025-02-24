@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table'; // Importando o módulo da tabela
 import { HttpClient, HttpClientModule } from '@angular/common/http'; // Importando o módulo HttpClientModule
 import { Router } from '@angular/router';
+import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Importe este módulo
 
 
 interface Product {
@@ -39,12 +40,15 @@ interface Product {
     ToolbarModule,
     InputTextModule,
     TableModule, // Corrigido para importar o módulo
-    HttpClientModule // Corrigido para importar o módulo HttpClientModule
-  ],
+    HttpClientModule, // Corrigido para importar o módulo HttpClientModule
+    ConfirmDialogModule
+],
   template: `
-    <p-toolbar styleClass="mb-6" >
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+    <p-toolbar styleClass="mb-6">
       <ng-template #start>
-        <p-button label="Novo" icon="pi pi-plus" severity="secondary" class="mr-2" (click)="onNovo()"  />
+        <p-button label="Novo" icon="pi pi-plus" severity="secondary" class="mr-2"  />
       </ng-template>
     </p-toolbar>
 
@@ -72,11 +76,12 @@ interface Product {
           <td>{{ product.pessoa.pessoaStatus.descricao }}</td>
           <td>
               <p-button icon="pi pi-pencil" severity="info" class="mr-2" (click)="onEdit(product)"></p-button>
-              <p-button icon="pi pi-trash" severity="danger" (click)="onDelete(product.id)" ></p-button>
+              <p-button icon="pi pi-trash" severity="danger" (click)="onDelete(product)"></p-button>
           </td>
         </tr>
       </ng-template>
     </p-table>
+
   `,
   providers: [MessageService, ConfirmationService]
 })
@@ -126,7 +131,7 @@ onEdit(product: Product) {
 
 onDelete(product: Product) {
     this.confirmationService.confirm({
-        message: `Tem certeza que deseja excluir ${product.id}?`,
+        message: `Tem certeza que deseja excluir ${product.pessoa.nome}?`,
         header: 'Confirmar Exclusão',
         icon: 'pi pi-exclamation-triangle',
         acceptLabel: 'Sim',
