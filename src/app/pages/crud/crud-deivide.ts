@@ -10,7 +10,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table'; // Importando o módulo da tabela
 import { HttpClient, HttpClientModule } from '@angular/common/http'; // Importando o módulo HttpClientModule
 import { Router } from '@angular/router';
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Importe este módulo
 
 
 interface Product {
@@ -40,15 +39,12 @@ interface Product {
     ToolbarModule,
     InputTextModule,
     TableModule, // Corrigido para importar o módulo
-    HttpClientModule, // Corrigido para importar o módulo HttpClientModule
-    ConfirmDialogModule
-],
+    HttpClientModule // Corrigido para importar o módulo HttpClientModule
+  ],
   template: `
-  <p-toast></p-toast>
-  <p-confirmDialog></p-confirmDialog>
-    <p-toolbar styleClass="mb-6">
+    <p-toolbar styleClass="mb-6" >
       <ng-template #start>
-        <p-button label="Novo" icon="pi pi-plus" severity="secondary" class="mr-2"  />
+        <p-button label="Novo" icon="pi pi-plus" severity="secondary" class="mr-2" (click)="onNovo()"  />
       </ng-template>
     </p-toolbar>
 
@@ -76,12 +72,11 @@ interface Product {
           <td>{{ product.pessoa.pessoaStatus.descricao }}</td>
           <td>
               <p-button icon="pi pi-pencil" severity="info" class="mr-2" (click)="onEdit(product)"></p-button>
-              <p-button icon="pi pi-trash" severity="danger" (click)="onDelete(product)"></p-button>
+              <p-button icon="pi pi-trash" severity="danger" (click)="onDelete(product.id)" ></p-button>
           </td>
         </tr>
       </ng-template>
     </p-table>
-
   `,
   providers: [MessageService, ConfirmationService]
 })
@@ -95,7 +90,7 @@ export class Crud implements OnInit {
   }
 
   loadDemoData() {
-    this.http.get<Product[]>('http://10.112.61.74:9090/pessoas/fisicas').subscribe(
+    this.http.get<Product[]>('http://localhost:9090/pessoas/fisicas').subscribe(
       (data) => {
         this.products.set(data); // Aqui você define os dados que virão da API.
         this.messageService.add({
@@ -131,7 +126,7 @@ onEdit(product: Product) {
 
 onDelete(product: Product) {
     this.confirmationService.confirm({
-        message: `Tem certeza que deseja excluir ${product.pessoa.nome}?`,
+        message: `Tem certeza que deseja excluir ${product.id}?`,
         header: 'Confirmar Exclusão',
         icon: 'pi pi-exclamation-triangle',
         acceptLabel: 'Sim',
