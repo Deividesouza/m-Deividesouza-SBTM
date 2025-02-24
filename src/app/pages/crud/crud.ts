@@ -89,7 +89,7 @@ export class Crud implements OnInit {
   }
 
   loadDemoData() {
-    this.http.get<Product[]>('http://10.112.61.74:9090/pessoas/fisicas').subscribe(
+    this.http.get<Product[]>('http://localhost:9090/pessoas/fisicas').subscribe(
       (data) => {
         this.products.set(data); // Aqui você define os dados que virão da API.
         this.messageService.add({
@@ -131,7 +131,7 @@ onDelete(product: Product) {
         acceptLabel: 'Sim',
         rejectLabel: 'Não',
         accept: () => {
-            this.http.delete(`http://10.112.61.74:9090/pessoas/${product.id}`).subscribe(
+            this.http.delete(`localhost:9090/pessoas/${product.id}`).subscribe(
                 () => {
                     this.messageService.add({
                         severity: 'success',

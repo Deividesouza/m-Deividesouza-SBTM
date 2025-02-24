@@ -15,6 +15,7 @@ import { StatusService } from '../service/status.service';
 import { PerfilService } from '../service/perfil.service';
 import { Tiposservice } from '../service/tipos.service';
 import { Cidadesservice } from '../service/cidades.service';
+import { UFservice } from '../service/uf.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';    //para a mascara
 import { Router } from '@angular/router';
 
@@ -126,17 +127,7 @@ import { Router } from '@angular/router';
                 <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
               </div>
             </div>
-            <div class="flex flex-col gap-6">
-                    <p-toolbar styleClass="mb-2">
-                            <div class="card flex flex-col gap-2" >
-                                <div class="font-semibold text-xl">Upload de Currículo</div>
-                                <input type="file" />
-                                <p-button label="Upload" ></p-button>
-                            </div>
-                    </p-toolbar>
-            </div>
-
-          <div class="card flex flex-col gap-4">
+             <div class="card flex flex-col gap-4">
             <div class="font-semibold text-xl">Informações de Localização</div>
             <div class="flex flex-col gap-2">
               <label for="logradouro">Logradouro</label>
@@ -163,7 +154,7 @@ import { Router } from '@angular/router';
                 <p-dropdown
                   id="state"
                   [(ngModel)]="selectedState"
-                  [options]="dropdownItems"
+                  [options]="vardropdownItems"
                   optionLabel="name"
                   placeholder="Selecione um estado"
                   class="w-full"
@@ -185,7 +176,7 @@ import { Router } from '@angular/router';
             <div class="flex flex-col md:flex-row gap-6">
                   <div class="flex flex-col gap-2 w-full">
                     <label for="cnpj">CNPJ</label>
-                    <input pInputText id="CNPJ" mask="CPF_CNPJ" [(ngModel)]="celular" type="text" />
+                    <input pInputText id="CNPJ" mask="CPF_CNPJ" [(ngModel)]="cnpj" type="text" />
                   </div>
                   <div class="flex flex-col gap-2 w-full">
                     <label for="celular">Telefone de Contato</label>
@@ -214,7 +205,7 @@ import { Router } from '@angular/router';
               <label for="state">Cidade</label>
               <p-dropdown
                 id="state"
-                [(ngModel)]="selectedCidade"
+                [(ngModel)]="selectedCidadepj"
                 [options]="vardropdownCidades"
                 optionLabel="name"
                 placeholder="Selecione uma cidade"
@@ -225,9 +216,9 @@ import { Router } from '@angular/router';
               <div class="flex flex-wrap gap-2 w-full">
                 <label for="state">Estado</label>
                 <p-dropdown
-                  id="state"
-                  [(ngModel)]="selectedState"
-                  [options]="dropdownItems"
+                  id="estado"
+                  [(ngModel)]="selectedStatepj"
+                  [options]="vardropdownItems"
                   optionLabel="name"
                   placeholder="Selecione um estado"
                   class="w-full"
@@ -239,15 +230,15 @@ import { Router } from '@angular/router';
               </div>
             </div>
             <div class="flex flex-col gap-6">
-              <div class="font-semibold text-xl">Upload de Arquivo</div>
+              <div class="font-semibold text-xl"> Carregar o Curriculo</div>
               <p-fileupload
                 name="demo[]"
 
                 [multiple]="true"
-                accept="image/*"
+                accept="application/pdf"
                 maxFileSize="1000000"
                 mode="advanced"
-                url="http://10.112.61.74:8080/api/upload"
+                url="../../../curriculos"
               >
                 <ng-template #empty>
                   <div>Arraste e solte arquivos aqui para fazer upload.</div>
@@ -282,6 +273,7 @@ export class FormLayout implements OnInit{
   email1: string = '';
   login: string = '';
   senha: string = '';
+  cnpj: string = '';
   confirmasenha: string = '';
   datacadastro: string = '';
   datavalidade: string = '';
@@ -293,15 +285,11 @@ export class FormLayout implements OnInit{
   selectedPerfil: any = null;
   selectedTipo: any = null;
   selectedStatus: any = null;
+  selectedStatepj: any = null;
+  selectedCidadepj: any = null;
 
 
-  dropdownItems = [
-    { name: 'Bahia', code: '1' },
-    { name: 'Sergipe', code: '2' },
-    { name: 'Alagoas', code: '3' },
-    { name: 'Pernambuco', code: '4' },
-    { name: 'Rio Grande do Norte', code: '5' },
-  ];
+  vardropdownItems: any[] = [];
 
   vardropdownCidades: any[] = [];
 
@@ -319,17 +307,19 @@ export class FormLayout implements OnInit{
   constructor(private readonly messageService: MessageService,
     private readonly http: HttpClient,
     private readonly dropdownStatus: StatusService,
-    private fb: FormBuilder,
+    private readonly  fb: FormBuilder,
     private readonly dropdownPerfil: PerfilService,
     private readonly dropdownTipos: Tiposservice,
     private readonly dropdownCidade: Cidadesservice,
-    private router: Router, ){}
+    private readonly dropdonwItems: UFservice,
+    private readonly router: Router, ){}
 
   ngOnInit(): void {
     this.carregarStatus();
     this.carregarPerfil();
     this.carregarTipos();
     this.carregarCidades();
+    this.carregarUF();
 
   }
 
@@ -381,6 +371,20 @@ export class FormLayout implements OnInit{
         this.vardropdownCidades = data.map(cidades => ({
           name: cidades.nome,
           code: cidades.id
+        }));
+      },
+      error: (err: any) => {
+        console.error('Erro ao carregar perfil:', err);
+      }
+    });
+  }
+
+  carregarUF(): void {
+    this.dropdonwItems.getUF().subscribe({
+      next: (data: any[]) => {
+        this.vardropdownItems = data.map(uf => ({
+          name: uf.nome,
+          code: uf.id
         }));
       },
       error: (err: any) => {

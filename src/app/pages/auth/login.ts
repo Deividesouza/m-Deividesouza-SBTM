@@ -54,7 +54,7 @@ export class Login {
 
   realizarLogin() {
     // URL da API para consultar as pessoas físicas
-    const apiUrl = 'http://10.112.61.74:9090/pessoas/fisicas';
+    const apiUrl = 'http://localhost:9090/pessoas/fisicas';
 
     this.http.get<any[]>(apiUrl).subscribe({
       next: (usuarios) => {
