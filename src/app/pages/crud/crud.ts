@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
 
 interface Product {
     id: number;
@@ -61,9 +62,9 @@ interface Product {
 @Component({
     selector: 'app-crud',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule],
+    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule,NgxMaskDirective],
     templateUrl: './crud.component.html',
-    providers: [MessageService, ConfirmationService, DialogService]
+    providers: [MessageService, ConfirmationService, DialogService,provideNgxMask()]
 })
 export class Crud implements OnInit {
     products = signal<Product[]>([]);
@@ -120,7 +121,7 @@ export class Crud implements OnInit {
     }
 
     onEdit(product: Product) {
-        this.usuarioEditando = JSON.parse(JSON.stringify(product)); // Clona o objeto para evitar mudanças imediatas
+        this.usuarioEditando = JSON.parse(JSON.stringify(product));
         this.exibirModalEdicao = true;
     }
 
@@ -129,7 +130,44 @@ export class Crud implements OnInit {
     }
 
     salvarEdicao() {
-        this.http.put(`http://localhost:9090/pessoas/fisicas/editar/${this.usuarioEditando.id}}`, this.exibirModalEdicao).subscribe(
+
+        const payload = {
+            pessoaFisica: {
+                cpf: this.usuarioEditando.cpf,
+                celular: this.usuarioEditando.celular,
+                login: this.usuarioEditando.login,
+                senha: this.usuarioEditando.senha,
+                pessoaFisicaTipo: {
+                    id: this.usuarioEditando.pessoaFisicaTipo.id
+                },
+                perfilAcesso: {
+                    id: this.usuarioEditando.perfilAcesso.id
+                }
+            },
+            pessoa: {
+                nome: this.usuarioEditando.pessoa.nome,
+                telefone: this.usuarioEditando.pessoa.telefone,
+                email: this.usuarioEditando.pessoa.email,
+                dataValidade: this.usuarioEditando.pessoa.dataValidade,
+                endereco: {
+                    logradouro: this.usuarioEditando.pessoa.endereco.logradouro,
+                    cep: this.usuarioEditando.pessoa.endereco.cep,
+                    complemento: this.usuarioEditando.pessoa.endereco.complemento,
+                    numeroCasa: this.usuarioEditando.pessoa.endereco.numeroCasa,
+                    cidade: {
+                        id: this.usuarioEditando.pessoa.endereco.cidade.id,
+                        nome: this.usuarioEditando.pessoa.endereco.cidade.nome,
+                        uf: {
+                            id: this.usuarioEditando.pessoa.endereco.cidade.uf.id,
+                            nome: this.usuarioEditando.pessoa.endereco.cidade.uf.nome,
+                            sigla: this.usuarioEditando.pessoa.endereco.cidade.uf.sigla
+                        }
+                    }
+                }
+            }
+        };
+
+        this.http.put(`http://localhost:9090/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
             () => {
                 this.messageService.add({
                     severity: 'success',
