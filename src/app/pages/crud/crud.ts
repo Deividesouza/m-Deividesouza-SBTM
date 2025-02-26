@@ -94,7 +94,7 @@ export class Crud implements OnInit {
     }
 
     loadDemoData() {
-        this.http.get<Product[]>('http://10.112.61.74:9090/pessoas/fisicas').subscribe(
+        this.http.get<Product[]>('http://localhost:9090/pessoas/fisicas').subscribe(
             (data) => {
                 this.products.set(data);
                 this.messageService.add({
