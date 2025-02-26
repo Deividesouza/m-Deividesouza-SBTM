@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; // Importar HttpClient
 import { FluidModule } from 'primeng/fluid';
 import { InputTextModule } from 'primeng/inputtext';
@@ -10,7 +10,6 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ToolbarModule } from 'primeng/toolbar';
-import { OnInit } from '@angular/core';
 import { StatusService } from '../service/status.service';
 import { PerfilService } from '../service/perfil.service';
 import { Tiposservice } from '../service/tipos.service';
