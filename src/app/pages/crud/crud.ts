@@ -84,10 +84,10 @@ export class Crud implements OnInit {
     usuarioVisualizando: Product = this.getNovoUsuario();
 
     constructor(
-        private http: HttpClient,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService,
-        private router: Router
+        private readonly http: HttpClient,
+        private readonly messageService: MessageService,
+        private readonly confirmationService: ConfirmationService,
+        private readonly router: Router
     ) {}
 
     ngOnInit() {
@@ -196,6 +196,8 @@ export class Crud implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
+            acceptButtonStyleClass: 'p-button-danger', // Vermelho para "Sim"
+            rejectButtonStyleClass: 'p-button-secondary', // Cinza para "Não"
             accept: () => {
                 this.http.delete(`http://localhost:9090/pessoas/fisicas/deletar/${product.id}`).subscribe(
                     () => {
@@ -219,6 +221,7 @@ export class Crud implements OnInit {
             }
         });
     }
+
 
     getNovoUsuario(): Product {
         return {
