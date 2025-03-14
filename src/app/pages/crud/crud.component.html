@@ -107,42 +107,42 @@
                                 [(ngModel)]="usuarioEditando.pessoa.dataCadastro" readonly />
                         </div>
                         <div class="flex flex-col gap-2 w-full">
-                            <label for="datavalidade">Data Validade</label>
-                            <input pInputText id="datavalidade" type="text"
-                                [(ngModel)]="usuarioEditando.pessoa.dataValidade" readonly />
+                                <label for="datavalidade">Data Validade</label>
+                                <input pInputText id="datavalidade" type="text"
+                                    [(ngModel)]="usuarioEditando.pessoa.dataValidade" readonly />
                         </div>
                     </div>
-
+    <hr class="custom-hr">
 
                     <div class="font-semibold text-xl">Informações de Localização</div>
-                    <div class="flex flex-col gap-2">
-                        <label for="logradouro">Logradouro</label>
-                        <input pInputText id="logradouro" type="text"
-                            [(ngModel)]="usuarioEditando.pessoa.endereco.logradouro" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label for="complemento">Complemento</label>
-                        <input pInputText id="complemento" type="text"
-                            [(ngModel)]="usuarioEditando.pessoa.endereco.complemento" />
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="cidade">Cidade</label>
-                            <input pInputText id="cidade" type="text"
-                                [(ngModel)]="usuarioEditando.pessoa.endereco.cidade.nome" />
+                        <div class="flex flex-col gap-2">
+                            <label for="logradouro">Logradouro</label>
+                            <input pInputText id="logradouro" type="text"
+                                [(ngModel)]="usuarioEditando.pessoa.endereco.logradouro" />
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="estado">Estado</label>
-                            <input pInputText id="estado" type="text"
-                                [(ngModel)]="usuarioEditando.pessoa.endereco.cidade.uf.sigla" />
+                        <div class="flex flex-col gap-2">
+                            <label for="complemento">Complemento</label>
+                            <input pInputText id="complemento" type="text"
+                                [(ngModel)]="usuarioEditando.pessoa.endereco.complemento" />
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="cep">CEP</label>
-                            <input pInputText id="cep" type="text" mask="00000-000"
-                                [(ngModel)]="usuarioEditando.pessoa.endereco.cep" />
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex flex-col gap-2 w-full">
+                                <label for="cidade">Cidade</label>
+                                <input pInputText id="cidade" type="text"
+                                    [(ngModel)]="usuarioEditando.pessoa.endereco.cidade.nome" />
+                            </div>
+                            <div class="flex flex-col gap-2 w-full">
+                                <label for="estado">Estado</label>
+                                <input pInputText id="estado" type="text"
+                                    [(ngModel)]="usuarioEditando.pessoa.endereco.cidade.uf.sigla" />
+                            </div>
+                            <div class="flex flex-col gap-2 w-full">
+                                <label for="cep">CEP</label>
+                                <input pInputText id="cep" type="text" mask="00000-000"
+                                    [(ngModel)]="usuarioEditando.pessoa.endereco.cep" />
+                            </div>
                         </div>
-                    </div>
-
+        <hr class="custom-hr">
                     <div class="font-semibold text-xl">Informações Profissionais</div>
                     <div class="flex flex-col gap-2">
                         <label for="nomeEmpresa">Nome da Empresa</label>
@@ -161,13 +161,13 @@
                             <label for="emailEmpresa">Email</label>
                             <input pInputText id="emailEmpresa" type="text" />
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <label for="tipoInstituicao">Tipo de Instituição</label>
                             <input pInputText id="tipoInstituicao" type="text" />
                         </div>
                     </div>
                     <p-footer class="text-right gap-5">
-                        <p-button label="Cancelar" icon="pi pi-times" severity="success"
+                        <p-button label="Cancelar" icon="pi pi-times" severity="success" class="mr-2"
                             (click)="fecharModalEdicao()"></p-button>
                         <p-button label="Salvar" icon="pi pi-check" severity="danger"
                             (click)="salvarEdicao()"></p-button>
@@ -182,7 +182,7 @@
 
 <!-- Modal de Visualização -->
 <p-dialog [(visible)]="exibirModalVisualizar" header="Visualizar Usuário" [modal]="true" [closable]="false"
-    [style]="{ width: '50vw' }" [contentStyle]="{ 'padding': '1.5rem' }">
+    [style]="{ width: '60vw' }" [contentStyle]="{ 'padding': '1.5rem' }">
     <div class="p-fluid grid">
         <div class="flex flex-col md:flex-row gap-8">
             <div class="md:w-full">
@@ -233,17 +233,17 @@
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <label for="pacesso">Perfil de Acesso</label>
                             <input pInputText id="pacesso" type="text"
                                 [(ngModel)]="usuarioVisualizando.perfilAcesso.descricao" readonly />
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <label for="pftipo">Pessoa Fisica Tipo</label>
                             <input pInputText id="pftipo" type="text"
                                 [(ngModel)]="usuarioVisualizando.pessoaFisicaTipo.descricao" readonly />
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full">
+                        <div class="flex flex-col gap-2 w-full">
                             <label for="status">Status</label>
                             <input pInputText id="status" type="text"
                                 [(ngModel)]="usuarioVisualizando.pessoa.pessoaStatus.descricao" readonly />
@@ -262,39 +262,36 @@
                                 [(ngModel)]="usuarioVisualizando.pessoa.dataValidade" readonly />
                         </div>
                     </div>
-
-                    <div class="card flex flex-col gap-4">
+        <hr class="custom-hr">
                         <div class="font-semibold text-xl">Informações de Localização</div>
-                        <div class="flex flex-col gap-2">
-                            <label for="logradouro">Logradouro</label>
-                            <input pInputText id="logradouro" type="text"
-                                [(ngModel)]="usuarioVisualizando.pessoa.endereco.logradouro" readonly />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="complemento">Complemento</label>
-                            <input pInputText id="complemento" type="text"
-                                [(ngModel)]="usuarioVisualizando.pessoa.endereco.complemento" readonly />
-                        </div>
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex flex-wrap gap-2 w-full">
-                                <label for="cidade">Cidade</label>
-                                <input pInputText id="cidade" type="text"
-                                    [(ngModel)]="usuarioVisualizando.pessoa.endereco.cidade.nome" readonly />
+                            <div class="flex flex-col gap-2">
+                                <label for="logradouro">Logradouro</label>
+                                <input pInputText id="logradouro" type="text"
+                                    [(ngModel)]="usuarioVisualizando.pessoa.endereco.logradouro" readonly />
                             </div>
-                            <div class="flex flex-wrap gap-2 w-full">
-                                <label for="estado">Estado</label>
-                                <input pInputText id="estado" type="text"
-                                    [(ngModel)]="usuarioVisualizando.pessoa.endereco.cidade.uf.sigla" readonly />
+                            <div class="flex flex-col gap-2">
+                                <label for="complemento">Complemento</label>
+                                <input pInputText id="complemento" type="text"
+                                    [(ngModel)]="usuarioVisualizando.pessoa.endereco.complemento" readonly />
                             </div>
-                            <div class="flex flex-wrap gap-2 w-full">
-                                <label for="cep">CEP</label>
-                                <input pInputText id="cep" type="text" mask="00000-000"
-                                    [(ngModel)]="usuarioVisualizando.pessoa.endereco.cep" readonly />
+                            <div class="flex flex-col md:flex-row gap-6">
+                                <div class="flex flex-col gap-2 w-full">
+                                    <label for="cidade">Cidade</label>
+                                    <input pInputText id="cidade" type="text"
+                                        [(ngModel)]="usuarioVisualizando.pessoa.endereco.cidade.nome" readonly />
+                                </div>
+                                <div class="flex flex-col gap-2 w-full">
+                                    <label for="estado">Estado</label>
+                                    <input pInputText id="estado" type="text"
+                                        [(ngModel)]="usuarioVisualizando.pessoa.endereco.cidade.uf.sigla" readonly />
+                                </div>
+                                <div class="flex flex-col gap-2 w-full">
+                                    <label for="cep">CEP</label>
+                                    <input pInputText id="cep" type="text" mask="00000-000"
+                                        [(ngModel)]="usuarioVisualizando.pessoa.endereco.cep" readonly />
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="card flex flex-col gap-4">
+            <hr class="custom-hr">
                         <div class="font-semibold text-xl">Informações Profissionais</div>
                         <div class="flex flex-col gap-2">
                             <label for="nomeEmpresa">Nome da Empresa</label>
@@ -315,12 +312,11 @@
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-6">
-                            <div class="flex flex-wrap gap-2 w-full">
+                            <div class="flex flex-col gap-2 w-full">
                                 <label for="tipoInstituicao">Tipo de Instituição</label>
                                 <input pInputText id="tipoInstituicao" type="text" readonly />
                             </div>
                         </div>
-                    </div>
                     <p-footer class="text-right">
                         <p-button label="Fechar" icon="pi pi-times" severity="success"
                             (click)="fecharModalVisualizar()"></p-button>

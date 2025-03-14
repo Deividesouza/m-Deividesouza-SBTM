@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UFservice {
-    private apiUrl = 'http://localhost:9090/uf/uf';
+    private apiUrl = (`${environment.url}/uf/uf`);
 
   constructor(private http: HttpClient) { }
 

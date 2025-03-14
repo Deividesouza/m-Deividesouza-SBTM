@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -50,11 +50,11 @@ export class Login {
   checked: boolean = false;
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private readonly http: HttpClient, private readonly router: Router) {}
 
   realizarLogin() {
     // URL da API para consultar as pessoas físicas
-    const apiUrl = 'http://localhost:9090/pessoas/fisicas';
+    const apiUrl = (`${environment.url}/pessoas/fisicas`);
 
     this.http.get<any[]>(apiUrl).subscribe({
       next: (usuarios) => {

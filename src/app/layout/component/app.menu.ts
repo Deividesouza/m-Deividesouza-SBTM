@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '../../pages/service/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -15,21 +16,31 @@ import { AppMenuitem } from './app.menuitem';
         </ng-container>
     </ul> `
 })
-export class AppMenu {
+export class AppMenu implements OnInit {
     model: MenuItem[] = [];
 
+    constructor(private authService: AuthService) {}
+
     ngOnInit() {
-        this.model = [
+        const perfil = this.authService.getPerfil();
+        this.model = this.getMenuItemsByPerfil(perfil);
+    }
+
+    getMenuItemsByPerfil(perfil: string | null): MenuItem[] {
+        const menuItems: MenuItem[] = [
             {
                 label: 'Funcionalidades',
                 items: [
-                    { label: 'Formulário Cadastro', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
+                    { label: 'Formulário Cadastro', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout']},
                     { label: 'Formulário Registro', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formresister'] },
                     { label: 'Gestor', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formgestor'] },
                     { label: 'Supervisor OM', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formsupervisor'] },
                     { label: 'Operador OM', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formoperador'] },
                     { label: 'Participante', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formparticipante'] },
-                    { label: 'Credenciada', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Administradores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Gestores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Supervisores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Operadores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
                 ]
             },
             {
@@ -37,7 +48,7 @@ export class AppMenu {
                 icon: 'pi pi-fw pi-briefcase',
                 routerLink: ['/pages'],
                 items: [
-                    {
+  /*                  {
                         label: 'Autorização',
                         icon: 'pi pi-fw pi-user',
                         items: [
@@ -57,19 +68,139 @@ export class AppMenu {
                                 routerLink: ['/auth/access']
                             }
                         ]
-                    },
+                    },     */
                     {
                         label: 'Crud',
                         icon: 'pi pi-fw pi-pencil',
                         routerLink: ['/pages/crud']
                     },
-/*                    {
-                        label: 'Tela Vazia',
-                        icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['/pages/empty']
-                    } */
                 ]
             },
         ];
+
+        switch (perfil) {
+            case '0': // Administrador
+                return menuItems;
+            case '1': // Credenciada
+                return menuItems.map(item => {
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label == 'Credenciada'
+                            )
+                        };
+                    }
+                    if (item.label === 'Paginas') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Crud'
+                            )
+                        }
+                    }
+                    return item;
+                });
+            case '2': // Participante
+                return menuItems.map(item => {
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label === 'Participante'
+                            )
+                        };
+                    }
+                    if (item.label === 'Paginas') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Crud'
+                            )
+                        }
+                    }
+                    return item;
+                });
+            case '3': // Operador
+                return menuItems.map(item => {
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Administradores'
+                            )
+                        };
+                    }
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Gestores'
+                            )
+                        };
+                    }
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Supervisores'
+                            )
+                        };
+                    }
+                    if (item.label === 'Paginas') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Crud'
+                            )
+                        }
+                    }
+                    return item;
+                });
+            case '4': // Supervisor
+                return menuItems.map(item => {
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Administradores'
+                            )
+                        };
+                    }
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Gestores'
+                            )
+                        };
+                    }
+                    if (item.label === 'Paginas') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Crud'
+                            )
+                        }
+                    }
+                    return item;
+                });
+
+            case '5': // Gestor
+                return menuItems.map(item => {
+                    if (item.label === 'Funcionalidades') {
+                        return {
+                            ...item,
+                            items: item.items?.filter(menuItem =>
+                                menuItem.label !== 'Listar Administradores'
+                            )
+                        };
+                    }
+                    return item;
+                });
+            // Adicione mais casos conforme necessário para outros perfis
+            default:
+                return [];
+        }
     }
 }

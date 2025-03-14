@@ -13,7 +13,8 @@ import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { environment } from '../../../environments/environment'; //para a mascara
 
 interface Product {
     id: number;
@@ -95,7 +96,7 @@ export class Crud implements OnInit {
     }
 
     loadDemoData() {
-        this.http.get<Product[]>('http://localhost:9090/pessoas/fisicas').subscribe(
+        this.http.get<Product[]>(`${environment.url}/pessoas/fisicas`).subscribe(
             (data) => {
                 this.products.set(data);
                 this.messageService.add({
@@ -167,7 +168,8 @@ export class Crud implements OnInit {
             }
         };
 
-        this.http.put(`http://localhost:9090/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
+
+        this.http.put(`${environment.url}/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
             () => {
                 this.messageService.add({
                     severity: 'success',
@@ -199,7 +201,7 @@ export class Crud implements OnInit {
             acceptButtonStyleClass: 'p-button-danger', // Vermelho para "Sim"
             rejectButtonStyleClass: 'p-button-secondary', // Cinza para "Não"
             accept: () => {
-                this.http.delete(`http://localhost:9090/pessoas/fisicas/deletar/${product.id}`).subscribe(
+                this.http.delete(`${environment.url}/pessoas/fisicas/deletar/${product.id}`).subscribe(
                     () => {
                         this.messageService.add({
                             severity: 'success',

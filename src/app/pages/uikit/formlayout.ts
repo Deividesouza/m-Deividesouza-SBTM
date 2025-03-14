@@ -17,6 +17,7 @@ import { Cidadesservice } from '../service/cidades.service';
 import { UFservice } from '../service/uf.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-formlayout',
@@ -187,14 +188,16 @@ export class FormLayout implements OnInit {
         };
 
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        this.http.post('http://localhost:9090/pessoas/cadastrar', pessoaData, { headers }).subscribe(
-            (response) => {
-                this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });
-                this.reloadPage();
-            },
-            (error) => {
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cadastrar!' });
-            }
-        );
+this.http.post(`${environment.url}/pessoas/cadastrar`, pessoaData, { headers }).subscribe(
+    (response) => {
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });
+        this.reloadPage();
+    },
+    (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cadastrar!' });
+        console.error('Erro na requisição:', error); // Adicione um log para depuração
     }
+);
+    }
+
 }
