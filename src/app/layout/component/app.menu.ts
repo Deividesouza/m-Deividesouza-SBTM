@@ -48,7 +48,7 @@ export class AppMenu implements OnInit {
                 icon: 'pi pi-fw pi-briefcase',
                 routerLink: ['/pages'],
                 items: [
-  /*                  {
+/*                  {
                         label: 'Autorização',
                         icon: 'pi pi-fw pi-user',
                         items: [

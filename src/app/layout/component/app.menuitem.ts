@@ -71,21 +71,13 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppMenuitem {
     @Input() item!: MenuItem;
-
     @Input() index!: number;
-
     @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
-
     @Input() parentKey!: string;
-
     active = false;
-
     menuSourceSubscription: Subscription;
-
     menuResetSubscription: Subscription;
-
     key: string = '';
-
     constructor(
         public router: Router,
         private layoutService: LayoutService

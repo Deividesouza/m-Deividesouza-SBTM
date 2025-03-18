@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PrimeNG } from 'primeng/config';
 
 @Component({
     selector: 'app-root',
@@ -8,10 +7,4 @@ import { PrimeNG } from 'primeng/config';
     imports: [RouterModule],
     template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {
-    constructor(private readonly primeng: PrimeNG) {}
-
-    ngOnInit() {
-        this.primeng.ripple.set(true);
-    }
-}
+export class AppComponent {}

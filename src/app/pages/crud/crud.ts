@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { environment } from '../../../environments/environment'; //para a mascara
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
+import { environment } from '../../../environments/environment';
 
 interface Product {
     id: number;
@@ -71,6 +71,8 @@ export class Crud implements OnInit {
     products = signal<Product[]>([]);
     exibirModalEdicao = false;
     exibirModalVisualizar = false;
+    termoPesquisa = '';
+    dadosFiltrados = signal<Product[]>([]);
 
     onView(product: Product) {
         this.usuarioVisualizando = JSON.parse(JSON.stringify(product));
@@ -85,11 +87,15 @@ export class Crud implements OnInit {
     usuarioVisualizando: Product = this.getNovoUsuario();
 
     constructor(
-        private readonly http: HttpClient,
-        private readonly messageService: MessageService,
-        private readonly confirmationService: ConfirmationService,
-        private readonly router: Router
+        private http: HttpClient,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService,
+        private router: Router
     ) {}
+
+    exportCSV() {
+        this.exportCSV();
+    }
 
     ngOnInit() {
         this.loadDemoData();
@@ -97,8 +103,10 @@ export class Crud implements OnInit {
 
     loadDemoData() {
         this.http.get<Product[]>(`${environment.url}/pessoas/fisicas`).subscribe(
+
             (data) => {
                 this.products.set(data);
+                this.dadosFiltrados.set(data); // Inicializa os dados filtrados com os dados carregados
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Dados carregados',
@@ -115,6 +123,27 @@ export class Crud implements OnInit {
                 });
             }
         );
+    }
+
+
+    filtrarDados() {
+        if (!this.termoPesquisa) {
+            this.dadosFiltrados.set(this.products());
+            return;
+        }
+
+        const termo = this.termoPesquisa.toLowerCase();
+        const dadosFiltrados = this.products().filter(product => {
+            return (
+                product.id.toString().includes(termo) ||
+                product.pessoa.nome.toLowerCase().includes(termo) ||
+                product.cpf.toLowerCase().includes(termo) ||
+                product.pessoa.endereco.logradouro.toLowerCase().includes(termo) ||
+                product.perfilAcesso.descricao.toLowerCase().includes(termo)
+            );
+        });
+
+        this.dadosFiltrados.set(dadosFiltrados);
     }
 
     onNovo() {
@@ -168,8 +197,8 @@ export class Crud implements OnInit {
             }
         };
 
-
         this.http.put(`${environment.url}/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
+
             () => {
                 this.messageService.add({
                     severity: 'success',
@@ -198,10 +227,9 @@ export class Crud implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
-            acceptButtonStyleClass: 'p-button-danger', // Vermelho para "Sim"
-            rejectButtonStyleClass: 'p-button-secondary', // Cinza para "Não"
             accept: () => {
-                this.http.delete(`${environment.url}/pessoas/fisicas/deletar/${product.id}`).subscribe(
+                this.http.delete(`${environment.url}/fisicas/deletar/${product.id}`).subscribe(
+
                     () => {
                         this.messageService.add({
                             severity: 'success',
@@ -223,7 +251,6 @@ export class Crud implements OnInit {
             }
         });
     }
-
 
     getNovoUsuario(): Product {
         return {

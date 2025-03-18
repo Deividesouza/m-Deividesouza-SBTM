@@ -1,14 +1,14 @@
+import { environment } from './../../../environments/environment';
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = (`${environment.url}/pessoas/fisicas`);
+    private apiUrl = `${environment.url}/pessoas/fisicas`;
 
     private perfilUsuario = signal<string | null>(null); // Estado reativo do perfil
     private usuarioLogado = signal<any | null>(null); // Estado reativo do usuário logado

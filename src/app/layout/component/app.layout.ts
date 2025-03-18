@@ -41,7 +41,7 @@ export class AppLayout {
             if (!this.menuOutsideClickListener) {
                 this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {
                     if (this.isOutsideClicked(event)) {
-                       this.hideMenu();
+                        this.hideMenu();
                     }
                 });
             }
@@ -52,7 +52,7 @@ export class AppLayout {
         });
 
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-          this.hideMenu();
+            this.hideMenu();
         });
     }
 

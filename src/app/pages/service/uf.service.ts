@@ -4,15 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UFservice {
-    private apiUrl = (`${environment.url}/uf/uf`);
+    private apiUrl = `${environment.url}/uf/uf`;
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    getUF(): Observable<any>{
+    getUF(): Observable<any> {
         return this.http.get<any[]>(this.apiUrl);
     }
-
 }

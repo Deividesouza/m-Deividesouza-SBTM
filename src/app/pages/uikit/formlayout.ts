@@ -17,7 +17,7 @@ import { Cidadesservice } from '../service/cidades.service';
 import { UFservice } from '../service/uf.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
+import { AuthService } from '../service/auth.service';
 
 @Component({
     selector: 'app-formlayout',
@@ -43,6 +43,7 @@ export class FormLayout implements OnInit {
     datavalidade: string = '';
     logradouro: string = '';
     complemento: string = '';
+    descricao: string = '';
     cep: string = '';
     selectedState: any = null;
     selectedCidade: any = null;
@@ -52,17 +53,14 @@ export class FormLayout implements OnInit {
     selectedStatepj: any = null;
     selectedCidadepj: any = null;
 
+
     vardropdownItems: any[] = [];
-
     vardropdownCidades: any[] = [];
-
     vardropdownTipos: any[] = [];
-
     vardropdownStatus: any[] = [];
-
     vardropdownPerfis: any[] = [];
-
     uploadedFiles: any[] = [];
+    selectedFile: File | null = null;
 
     constructor(
         private readonly messageService: MessageService,
@@ -72,8 +70,9 @@ export class FormLayout implements OnInit {
         private readonly dropdownPerfil: PerfilService,
         private readonly dropdownTipos: Tiposservice,
         private readonly dropdownCidade: Cidadesservice,
-        private readonly dropdonwItems: UFservice,
-        private readonly router: Router
+        private readonly dropdownItems: UFservice,
+        private readonly router: Router,
+        private authService: AuthService
     ) {}
 
     ngOnInit(): void {
@@ -141,7 +140,7 @@ export class FormLayout implements OnInit {
     }
 
     carregarUF(): void {
-        this.dropdonwItems.getUF().subscribe({
+        this.dropdownItems.getUF().subscribe({
             next: (data: any[]) => {
                 this.vardropdownItems = data.map((uf) => ({
                     name: uf.nome,
@@ -154,6 +153,30 @@ export class FormLayout implements OnInit {
         });
     }
 
+    onFileSelected(event: any) {
+        this.selectedFile = event.target.files[0] as File;
+    }
+
+    onUpload() {
+        if (this.selectedFile) {
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
+
+            // Faz o upload do arquivo
+            this.http.post('http://localhost:8080/pessoas/cadastrar', formData).subscribe(
+
+                (response) => {
+                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso!' });
+                },
+                (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao enviar arquivo!' });
+                }
+            );
+        } else {
+            this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Nenhum arquivo selecionado!' });
+        }
+    }
+
     onVoltar() {
         this.router.navigate(['/pages/crud']);
     }
@@ -162,6 +185,10 @@ export class FormLayout implements OnInit {
         window.location.reload();
     }
 
+    atualizarContador() {
+        // Esta função é chamada sempre que o valor do input muda
+        // O contador é atualizado automaticamente devido ao binding {{ descricao.length }}
+    }
     onSubmit() {
         const pessoaData = {
             pessoa: {
@@ -188,16 +215,15 @@ export class FormLayout implements OnInit {
         };
 
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-this.http.post(`${environment.url}/pessoas/cadastrar`, pessoaData, { headers }).subscribe(
-    (response) => {
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });
-        this.reloadPage();
-    },
-    (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cadastrar!' });
-        console.error('Erro na requisição:', error); // Adicione um log para depuração
-    }
-);
-    }
+        this.http.post('http://localhost:8080/pessoas/cadastrar', pessoaData, { headers }).subscribe(
 
+            (response) => {
+                this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });
+                this.reloadPage();
+            },
+            (error) => {
+                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cadastrar!' });
+            }
+        );
+    }
 }

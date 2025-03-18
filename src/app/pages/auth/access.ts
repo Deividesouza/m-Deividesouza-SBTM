@@ -5,7 +5,7 @@ import { RippleModule } from 'primeng/ripple';
 // import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 
 @Component({
-    selector: 'app-access',
+    selector: 'app-access-denied',
     standalone: true,
     imports: [ButtonModule, RouterModule, RippleModule, ButtonModule],
     template: ` <!--  <app-floating-configurator />  -->
@@ -19,7 +19,7 @@ import { RippleModule } from 'primeng/ripple';
                             </div>
                             <h1 class="text-surface-900 dark:text-surface-0 font-bold text-4xl lg:text-5xl mb-2">Acesso Negado</h1>
                             <span class="text-muted-color mb-8">Entre em contato com o administrador do sistema</span>
-                       <!--     <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-access.svg" alt="Access denied" class="mb-8" width="80%" /> -->
+                        <!--     <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-access.svg" alt="Access denied" class="mb-8" width="80%" /> -->
                             <div class="col-span-12 mt-8 text-center">
                                 <p-button label="Voltar tela de Login" routerLink="/" severity="warn" />
                             </div>
@@ -29,4 +29,4 @@ import { RippleModule } from 'primeng/ripple';
             </div>
         </div>`
 })
-export class Access {}
+export class AccessDeniedComponent {}

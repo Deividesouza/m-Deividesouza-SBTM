@@ -1,20 +1,17 @@
+import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
-
-
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PerfilService {
-    private apiUrl = (`${environment.url}/tipos/perfil`);
+    private apiUrl = `${environment.url}/tipos/perfil`;
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    getPerfil(): Observable<any>{
+    getPerfil(): Observable<any> {
         return this.http.get<any[]>(this.apiUrl);
     }
-
 }

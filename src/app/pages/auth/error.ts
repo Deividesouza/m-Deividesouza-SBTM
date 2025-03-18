@@ -17,9 +17,9 @@ import { RippleModule } from 'primeng/ripple';
                             <div class="flex justify-center items-center border-2 border-pink-500 rounded-full" style="height: 3.2rem; width: 3.2rem">
                                 <i class="pi pi-fw pi-exclamation-circle !text-2xl text-pink-500"></i>
                             </div>
-                            <h1 class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2">Ocorreu Eroo</h1>
+                            <h1 class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-2">Ocorreu Erro</h1>
                             <span class="text-muted-color mb-8">Requisito não esta disponível.</span>
-                          <!--  <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-error.svg" alt="Error" class="mb-8" width="80%" />  -->
+                        <!--  <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-error.svg" alt="Error" class="mb-8" width="80%" />  -->
                             <div class="col-span-12 mt-8 text-center">
                                 <p-button label="Voltar para tela de Login" routerLink="/" severity="danger" />
                             </div>

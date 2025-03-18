@@ -35,11 +35,11 @@
                 <div class="flex flex-col md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
                         <label for="senha">Senha</label>
-                        <input pInputText id="senha" [(ngModel)]="senha" type="text" />
+                        <input pInputText id="senha" [(ngModel)]="senha" type="password" />
                     </div>
                     <div class="flex flex-col gap-2 w-full">
                         <label for="confirmasena">Comfirme a Senha</label>
-                        <input pInputText id="confirmasenha" [(ngModel)]="confirmasenha" type="text" />
+                        <input pInputText id="confirmasenha" [(ngModel)]="confirmasenha" type="password" />
                     </div>
                 </div>
                 <div class="flex flex-col md:flex-row gap-6">
@@ -57,14 +57,11 @@
                         <label for="state">Pessoa Fisica Tipo</label>
                         <p-dropdown id="state" [(ngModel)]="selectedTipo" [options]="vardropdownTipos" optionLabel="name" placeholder="Selecione o Tipo" class="w-full"></p-dropdown>
                     </div>
-                    <div class="flex flex-col gap-6 w-full">
-                        <p-toolbar styleClass="mb-2">
-                            <label for="datavalidade">Data Validade :</label>
-                            <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
-                        </p-toolbar>
+                    <div class="flex flex-col gap-2 w-full">
+                        <label for="datavalidade">Data Validade :</label>
+                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
                     </div>
                 </div>
-            <hr class="custom-hr">
                     <div class="font-semibold text-xl">Informações de Localização</div>
                         <div class="flex flex-col gap-2">
                             <label for="logradouro">Logradouro</label>
@@ -78,17 +75,17 @@
                             <label for="state">Cidade</label>
                             <p-dropdown id="state" [(ngModel)]="selectedCidade" [options]="vardropdownCidades" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-dropdown>
                         </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Estado</label>
-                            <p-dropdown id="state" [(ngModel)]="selectedState" [options]="vardropdownItems" optionLabel="name" placeholder="Selecione um estado" class="w-full"></p-dropdown>
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex flex-wrap gap-2 w-full">
+                                <label for="state">Estado</label>
+                                <p-dropdown id="state" [(ngModel)]="selectedState" [options]="vardropdownItems" optionLabel="name" placeholder="Selecione um estado" class="w-full"></p-dropdown>
+                            </div>
+                            <div class="flex flex-col gap-2 w-full">
+                                <label for="zip">CEP</label>
+                                <input pInputText id="cep" mask="00000-000" [(ngModel)]="cep" type="text" />
+                            </div>
                         </div>
-                        <div class="flex flex-col gap-2 w-full">
-                            <label for="zip">CEP</label>
-                            <input pInputText id="cep" mask="00000-000" [(ngModel)]="cep" type="text" />
-                        </div>
-                    </div>
-                <hr class="custom-hr">
+
                     <div class="font-semibold text-xl">Informações Profissionais</div>
                     <div class="flex flex-col gap-2">
                         <label for="name">Nome da Empresa</label>
@@ -108,6 +105,12 @@
                             <input pInputText id="email1" type="text" />
                         </div>
                     </div>
+<!--  Adicionar ao desenvolvimento -->
+                    <div class="flex flex-col gap-2">
+                        <label for="descricao">Descrição ({{ descricao.length }} de 500 characters):</label>
+                        <textarea pInputText id="descricao" [(ngModel)]="descricao" type="text" maxlength="500" size="500" (input)="atualizarContador()"></textarea>
+                    </div>
+
                     <div class="flex flex-col md:flex-row gap-6">
                         <div class="flex flex-wrap gap-2 w-full">
                             <label for="state">Tipo de Instituição</label>
@@ -143,7 +146,12 @@
                             </ng-template>
                         </p-fileupload>
                     </div>
-
+<!-- adicionar ao  desenvolvimento -->
+                    <p-toolbar>
+                            <div class="font-semibold text-xl">Carregar o Currículo</div>
+                            <input type="file" (change)="onFileSelected($event)" />
+                            <p-button label="Upload" (click)="onUpload()"></p-button>
+                    </p-toolbar>
                     <p-toolbar styleClass="mb-6">
                         <ng-template #start>
                             <p-button label="Cadastrar" icon="pi pi-check" severity="primary" class="mr-2" (click)="onSubmit()"></p-button>

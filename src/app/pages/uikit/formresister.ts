@@ -8,13 +8,16 @@ import { TextareaModule } from 'primeng/textarea';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ToolbarModule } from 'primeng/toolbar';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Importar HttpClient
+import { Router } from '@angular/router';
 
 
 @Component({
     selector: 'app-formresister',
     standalone: true,
     providers: [MessageService],
-    imports: [InputTextModule, FluidModule, ButtonModule, SelectModule, FormsModule, TextareaModule, FileUploadModule, ToastModule],
+    imports: [InputTextModule, FluidModule, ButtonModule, SelectModule, FormsModule, TextareaModule, FileUploadModule, ToastModule, ToolbarModule],
     template: `<p-fluid>
         <div class="flex flex-col md:flex-row gap-8">
             <div class="md:w-3/4">
@@ -60,17 +63,15 @@ import { MessageService } from 'primeng/api';
                             <input type="date" id="datavalidade" name="datavalidade">
                         </div>
                     </div>
-                    <div class="flex flex-col gap-6">
-                        <div class="font-semibold text-xl">Upload de Arquivo</div>
-                            <p-fileupload name="demo[]" (onUpload)="onUpload($event)" [multiple]="true"
-                                accept="image/*" maxFileSize="1000000" mode="advanced"
-                                url="http://localhost:8080/api/upload"> <!-- Alterar para sua API real -->
-                                <ng-template #empty>
-                                    <div>Arraste e solte arquivos aqui para fazer upload.</div>
-                                </ng-template>
-                            </p-fileupload>
-                    </div>
                 </div>
+
+                <p-toolbar styleClass="mb-2">
+                            <div class="card flex flex-col gap-2" >
+                                <div class="font-semibold text-xl">Upload de Currículo</div>
+                                <input type="file" (change)="onFileSelected($event)" />
+                                <p-button label="Upload" (click)="onUpload()"></p-button>
+                            </div>
+                </p-toolbar>
 
                 <div class="card flex flex-col gap-4">
                     <div class="font-semibold text-xl">Informações de Localização</div>
@@ -144,81 +145,115 @@ import { MessageService } from 'primeng/api';
                             <input pInputText id="zip" type="text" />
                         </div>
                     </div>
-                    <div class="flex flex-col gap-6">
-                        <div class="font-semibold text-xl">Upload de Arquivo</div>
-                            <p-fileupload name="demo[]" (onUpload)="onUpload($event)" [multiple]="true"
-                                accept="image/*" maxFileSize="1000000" mode="advanced"
-                                url="http://localhost:8080/api/upload"> <!-- Alterar para sua API real -->
-                                <ng-template #empty>
-                                    <div>Arraste e solte arquivos aqui para fazer upload.</div>
-                                </ng-template>
-                            </p-fileupload>
-                    </div>
+
                 </div>
             </div>
         </div>
+        <div class="flex gap-2 mt-4">
+            <p-button label="Salvar" (click)="onSalvar()"></p-button>
+            <p-button label="Voltar" severity="secondary" (click)="onVoltar()"></p-button>
+        </div>
     </p-fluid>`
 })
+
+
 export class Formresister {
+
     uploadedFiles: any [] = [];
-    constructor(private messageService: MessageService) {}
-    onUpload(event: any){
-        for (const file of event.files){
-            this.uploadedFiles.push(file);
-        }
-        this.messageService.add({ severity: 'info', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso' });
+    selectedFile: File | null = null;
+
+    constructor(
+            private messageService: MessageService,
+            private http: HttpClient,
+           // private fb: FormBuilder    //para a mascara)
+            private router: Router
+    ){}
+
+    onVoltar() {
+        this.router.navigate(['/pages/crud']);
     }
-    dropdownItems = [
-        { name: 'Bahia', code: '1' },
-        { name: 'Sergipe', code: '2' },
-        { name: 'Alagoas', code: '3' },
-        { name: 'Pernambuco', code: '4' },
-        { name: 'Rio Grande do Norte', code: '5' }
-    ];
-    dropdownItem = null;
 
-    dropdownCidades = [
-        { name: 'Salvador', code: '1' },
-        { name: 'Aracaju', code: '2' },
-        { name: 'Maceio', code: '3' },
-        { name: 'Recife', code: '4' },
-        { name: 'Fortaleza', code: '5' }
-    ];
-    dropdownCidade= null;
+    onSalvar() {
+        // Lógica para salvar o formulário
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro salvo com sucesso!' });
+    }
 
-    dropdownPerfis = [
-        { name: 'Admin', code: '1' },
-        { name: 'Participante', code: '2' },
-        { name: 'Usuario', code: '3' },
-        { name: 'Gerente', code: '4' },
-        { name: 'Gerente OM', code: '5' }
-    ];
-    dropdownPerfil = null;
+    onFileSelected(event: any) {
+        this.selectedFile = event.target.files[0] as File;
+    }
 
-    dropdownTipos = [
-        { name: 'Admin', code: '1' },
-        { name: 'Participante', code: '2' },
-        { name: 'Usuario', code: '3' },
-        { name: 'Gerente', code: '4' },
-        { name: 'Gerente OM', code: '5' }
-    ];
-    dropdownTipo = null;
+    onUpload() {
+        if (this.selectedFile) {
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
 
-    dropdownInstituicoes = [
-        { name: 'OM', code: '1' },
-        { name: 'Instituto Federal', code: '2' },
-        { name: 'Universidade', code: '3' },
-        { name: 'Faculdade', code: '4' },
-        { name: 'Escola Estadual, Municipal ou Federal', code: '5' }
-    ];
-    dropdownInstituicao = null;
+            // Faz o upload do arquivo
+            //this.http.post('http://localhost:9090/pessoas/cadastrar', formData).subscribe(
+            this.http.post('http://localhost:8080/pessoas/cadastrar', formData).subscribe(
 
-    dropdownStatuss = [
-        { name: 'Ativo', code: '1' },
-        { name: 'Suspenso', code: '2' },
-        { name: 'Vencido', code: '3' },
-        { name: 'Pendente', code: '4' },
-        { name: 'Excluído', code: '5' }
-    ];
-    dropdownStatus = null;
+                (response) => {
+                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso!' });
+                },
+                (error) => {
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao enviar arquivo!' });
+                }
+            );
+        } else {
+            this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Nenhum arquivo selecionado!' });
+        }
+    }
+
+        dropdownItems = [
+            { name: 'Bahia', code: '1' },
+            { name: 'Sergipe', code: '2' },
+            { name: 'Alagoas', code: '3' },
+            { name: 'Pernambuco', code: '4' },
+            { name: 'Rio Grande do Norte', code: '5' }
+        ];
+        dropdownItem = null;
+
+        dropdownCidades = [
+            { name: 'Salvador', code: '1' },
+            { name: 'Aracaju', code: '2' },
+            { name: 'Maceio', code: '3' },
+            { name: 'Recife', code: '4' },
+            { name: 'Fortaleza', code: '5' }
+        ];
+        dropdownCidade= null;
+
+        dropdownPerfis = [
+            { name: 'Admin', code: '1' },
+            { name: 'Participante', code: '2' },
+            { name: 'Usuario', code: '3' },
+            { name: 'Gerente', code: '4' },
+            { name: 'Gerente OM', code: '5' }
+        ];
+        dropdownPerfil = null;
+
+        dropdownTipos = [
+            { name: 'Admin', code: '1' },
+            { name: 'Participante', code: '2' },
+            { name: 'Usuario', code: '3' },
+            { name: 'Gerente', code: '4' },
+            { name: 'Gerente OM', code: '5' }
+        ];
+        dropdownTipo = null;
+
+        dropdownInstituicoes = [
+            { name: 'OM', code: '1' },
+            { name: 'Instituto Federal', code: '2' },
+            { name: 'Universidade', code: '3' },
+            { name: 'Faculdade', code: '4' },
+            { name: 'Escola Estadual, Municipal ou Federal', code: '5' }
+        ];
+        dropdownInstituicao = null;
+
+        dropdownStatuss = [
+            { name: 'Ativo', code: '1' },
+            { name: 'Suspenso', code: '2' },
+            { name: 'Vencido', code: '3' },
+            { name: 'Pendente', code: '4' },
+            { name: 'Excluído', code: '5' }
+        ];
+        dropdownStatus = null;
 }
