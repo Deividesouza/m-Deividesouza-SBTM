@@ -16,7 +16,7 @@
     </ng-template>
 </p-toolbar>
 
-<p-table #dt [value]="products()" [rows]="20" [paginator]="true" [globalFilterFields]="['name']">
+<p-table #dt [value]="dadosFiltrados()" [rows]="20" [paginator]="true">
     <ng-template #header>
         <tr>
             <th style="min-width: 1rem">ID</th>

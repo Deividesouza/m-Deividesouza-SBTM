@@ -24,6 +24,16 @@ export class AppMenu implements OnInit {
     ngOnInit() {
         const perfil = this.authService.getPerfil();
         this.model = this.getMenuItemsByPerfil(perfil);
+        const usuarioLogado = this.authService.getUsuarioLogado();
+
+        if (usuarioLogado) {
+            this.model.unshift({
+                label: `Usúario : ${usuarioLogado.pessoa.nome}`
+            },
+            {
+                label: `Perfil : ${usuarioLogado.perfilAcesso.descricao}`
+            });
+        }
     }
 
     getMenuItemsByPerfil(perfil: string | null): MenuItem[] {
@@ -38,7 +48,7 @@ export class AppMenu implements OnInit {
                     { label: 'Operador OM', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formoperador'] },
                     { label: 'Participante', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formparticipante'] },
                     { label: 'Listar Administradores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
-                    { label: 'Listar Gestores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Gestores', icon: 'pi pi-fw pi-id-card', routerLink: ['/empty/empty'] },
                     { label: 'Listar Supervisores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
                     { label: 'Listar Operadores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
                 ]
@@ -110,14 +120,6 @@ export class AppMenu implements OnInit {
                                 menuItem.label === 'Participante'
                             )
                         };
-                    }
-                    if (item.label === 'Paginas') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Crud'
-                            )
-                        }
                     }
                     return item;
                 });
@@ -202,5 +204,6 @@ export class AppMenu implements OnInit {
             default:
                 return [];
         }
+
     }
 }
