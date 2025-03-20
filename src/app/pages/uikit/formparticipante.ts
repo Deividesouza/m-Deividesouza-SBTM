@@ -1,205 +1,314 @@
-import { Component } from '@angular/core';
-import { FluidModule } from 'primeng/fluid';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
+import { Component, OnInit, signal } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TextareaModule } from 'primeng/textarea';
-import { FileUploadModule } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { DialogService } from 'primeng/dynamicdialog';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
+import { environment } from '../../../environments/environment';
 
+interface Product {
+    id: number;
+    cpf: string;
+    celular: string;
+    login: string;
+    senha: string;
+    pessoaFisicaTipo: {
+        id: number;
+        descricao: string;
+    };
+    perfilAcesso: {
+        id: number;
+        descricao: string;
+    };
+    pessoa: {
+        id: number;
+        nome: string;
+        telefone: string;
+        email: string;
+        dataCadastro: string | null;
+        dataValidade: [number, number, number];
+        endereco: {
+            id: number;
+            logradouro: string;
+            cep: string;
+            complemento: string;
+            numeroCasa: number;
+            cidade: {
+                id: number;
+                nome: string;
+                uf: {
+                    id: number;
+                    nome: string;
+                    sigla: string;
+                };
+            };
+        };
+        pessoaStatus: {
+            id: number;
+            descricao: string;
+        };
+    };
+}
 
 @Component({
     selector: 'app-formparticipante',
     standalone: true,
-    providers: [MessageService],
-    imports: [InputTextModule, FluidModule, ButtonModule, SelectModule, FormsModule, TextareaModule, FileUploadModule, ToastModule],
-    template: `<p-fluid>
-        <div class="flex flex-col md:flex-row gap-8">
-            <div class="md:w-3/4">
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Informações Participante</div>
-                        <div class="flex flex-col gap-2">
-                            <label for="name">Nome</label>
-                            <input pInputText id="name" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="cpf">CPF</label>
-                            <input pInputText id="cpf" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="celular">Celular</label>
-                            <input pInputText id="celular" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="email1">Email</label>
-                            <input pInputText id="email1" type="text" />
-                        </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Perfil de Acesso</label>
-                            <p-select id="state" [(ngModel)]="dropdownPerfil" [options]="dropdownPerfis" optionLabel="name" placeholder="Selecione um Perfil" class="w-full"></p-select>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="status">Status</label>
-                            <input pInputText id="status" type="text" />
-                        </div>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Pessoa Fisica Tipo</label>
-                            <p-select id="state" [(ngModel)]="dropdownTipo" [options]="dropdownTipos" optionLabel="name" placeholder="Selecione o Tipo" class="w-full"></p-select>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="datacadastro">Data Cadastro :</label>
-                            <input type="date" id="datacadastro" name="datacadastro">
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="datavalidade">Data Validade :</label>
-                            <input type="date" id="datavalidade" name="datavalidade">
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-6">
-                        <div class="font-semibold text-xl">Upload de Arquivo</div>
-                            <p-fileupload name="demo[]" (onUpload)="onUpload($event)" [multiple]="true"
-                                accept="image/*" maxFileSize="1000000" mode="advanced"
-                                url="http://localhost:8080/api/upload"> <!-- Alterar para sua API real -->
-                                <ng-template #empty>
-                                    <div>Arraste e solte arquivos aqui para fazer upload.</div>
-                                </ng-template>
-                            </p-fileupload>
-                    </div>
-                </div>
-
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Informações de Localização</div>
-                    <div class="flex flex-col gap-2">
-                            <label for="endereco">Endereço</label>
-                            <input pInputText id="endereco" type="text" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                            <label for="complemento">Complemento</label>
-                            <input pInputText id="complemento" type="text" />
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="state">Cidade</label>
-                        <p-select id="state" [(ngModel)]="dropdownCidade" [options]="dropdownCidades" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-select>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Estado</label>
-                            <p-select id="state" [(ngModel)]="dropdownItem" [options]="dropdownItems" optionLabel="name" placeholder="Selecione um estado" class="w-full"></p-select>
-                        </div>
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="zip">CEP</label>
-                            <input pInputText id="zip" type="text" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card flex flex-col gap-4">
-                    <div class="font-semibold text-xl">Informações Profissionais</div>
-                        <div class="flex flex-col gap-2">
-                            <label for="name">Nome da Empresa</label>
-                            <input pInputText id="name" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="cnpj">CNPJ</label>
-                            <input pInputText id="cnpj" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="celular">Telefone de Contato</label>
-                            <input pInputText id="celular" type="text" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label for="email1">Email</label>
-                            <input pInputText id="email1" type="text" />
-                        </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Tipo de Instituição</label>
-                            <p-select id="state" [(ngModel)]="dropdownInstituicao" [options]="dropdownInstituicoes" optionLabel="name" placeholder="Selecione um Tipo" class="w-full"></p-select>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                            <label for="endereco">Endereço</label>
-                            <input pInputText id="endereco" type="text" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                            <label for="complemento">Complemento</label>
-                            <input pInputText id="complemento" type="text" />
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="state">Cidade</label>
-                        <p-select id="state" [(ngModel)]="dropdownCidade" [options]="dropdownCidades" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-select>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="state">Estado</label>
-                            <p-select id="state" [(ngModel)]="dropdownItem" [options]="dropdownItems" optionLabel="name" placeholder="Selecione um estado" class="w-full"></p-select>
-                        </div>
-                        <div class="flex flex-wrap gap-2 w-full">
-                            <label for="zip">CEP</label>
-                            <input pInputText id="zip" type="text" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </p-fluid>`
+    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule,NgxMaskDirective],
+    templateUrl: './formparticipante.componente.html',
+    providers: [MessageService, ConfirmationService, DialogService,provideNgxMask()]
 })
-export class FormParticipante {
-    uploadedFiles: any [] = [];
-    constructor(private messageService: MessageService) {}
-    onUpload(event: any){
-        for (const file of event.files){
-            this.uploadedFiles.push(file);
-        }
-        this.messageService.add({ severity: 'info', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso' });
+export class FormParticipante implements OnInit {
+    products = signal<Product[]>([]);
+    exibirModalEdicao = false;
+    exibirModalVisualizar = false;
+    termoPesquisa = '';
+    dadosFiltrados = signal<Product[]>([]);
+
+    onView(product: Product) {
+        this.usuarioVisualizando = JSON.parse(JSON.stringify(product));
+        this.exibirModalVisualizar = true;
     }
-    dropdownItems = [
-        { name: 'Bahia', code: '1' },
-        { name: 'Sergipe', code: '2' },
-        { name: 'Alagoas', code: '3' },
-        { name: 'Pernambuco', code: '4' },
-        { name: 'Rio Grande do Norte', code: '5' }
-    ];
-    dropdownItem = null;
 
-    dropdownCidades = [
-        { name: 'Salvador', code: '1' },
-        { name: 'Aracaju', code: '2' },
-        { name: 'Maceio', code: '3' },
-        { name: 'Recife', code: '4' },
-        { name: 'Fortaleza', code: '5' }
-    ];
-    dropdownCidade= null;
+    fecharModalVisualizar() {
+        this.exibirModalVisualizar = false;
+    }
 
-    dropdownPerfis = [
-        { name: 'Admin', code: '1' },
-        { name: 'Participante', code: '2' },
-        { name: 'Usuario', code: '3' },
-        { name: 'Gerente', code: '4' },
-        { name: 'Gerente OM', code: '5' }
-    ];
-    dropdownPerfil = null;
+    usuarioEditando: Product = this.getNovoUsuario();
+    usuarioVisualizando: Product = this.getNovoUsuario();
 
-    dropdownTipos = [
-        { name: 'Admin', code: '1' },
-        { name: 'Participante', code: '2' },
-        { name: 'Usuario', code: '3' },
-        { name: 'Gerente', code: '4' },
-        { name: 'Gerente OM', code: '5' }
-    ];
-    dropdownTipo = null;
+    constructor(
+        private http: HttpClient,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService,
+        private router: Router
+    ) {}
 
-    dropdownInstituicoes = [
-        { name: 'OM', code: '1' },
-        { name: 'Instituto Federal', code: '2' },
-        { name: 'Universidade', code: '3' },
-        { name: 'Faculdade', code: '4' },
-        { name: 'Escola Estadual, Municipal ou Federal', code: '5' }
-    ];
-    dropdownInstituicao = null;
+    exportCSV() {
+        this.exportCSV();
+    }
+
+    ngOnInit() {
+        this.loadDemoData();
+    }
+
+
+    loadDemoData() {
+        const usuarioLogadoId = this.getUsuarioLogadoId(); // Obter o ID do usuário logado
+
+        this.http.get<Product[]>(`${environment.url}/pessoas/fisicas`).subscribe(
+            (data) => {
+                const usuarioLogado = data.find(user => user.id === usuarioLogadoId);
+
+                if (usuarioLogado) {
+                    this.products.set([usuarioLogado]); // Define os produtos com os dados do usuário logado
+                    this.dadosFiltrados.set([usuarioLogado]); // Define os dados filtrados
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Dados carregados',
+                        detail: 'Dados do usuário logado carregados com sucesso',
+                        life: 3000
+                    });
+                } else {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Usuário logado não encontrado',
+                        life: 3000
+                    });
+                }
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível carregar os dados da API',
+                    life: 3000
+                });
+            }
+        );
+    }
+
+    getUsuarioLogadoId(): number | null {
+        // Exemplo: Obter o ID do usuário logado do localStorage
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+        return usuarioLogado ? usuarioLogado.id : null;
+    }
+
+    filtrarDados() {
+        if (!this.termoPesquisa) {
+            this.dadosFiltrados.set(this.products());
+            return;
+        }
+
+        const termo = this.termoPesquisa.toLowerCase();
+        const dadosFiltrados = this.products().filter(product => {
+            return (
+                product.id.toString().includes(termo) ||
+                product.pessoa.nome.toLowerCase().includes(termo) ||
+                product.cpf.toLowerCase().includes(termo) ||
+                product.pessoa.endereco.logradouro.toLowerCase().includes(termo) ||
+                product.perfilAcesso.descricao.toLowerCase().includes(termo)
+            );
+        });
+
+        this.dadosFiltrados.set(dadosFiltrados);
+    }
+
+    onEdit(product: Product) {
+        this.usuarioEditando = JSON.parse(JSON.stringify(product));
+        this.exibirModalEdicao = true;
+    }
+
+    fecharModalEdicao() {
+        this.exibirModalEdicao = false;
+    }
+
+    salvarEdicao() {
+
+        const payload = {
+            pessoaFisica: {
+                cpf: this.usuarioEditando.cpf,
+                celular: this.usuarioEditando.celular,
+                login: this.usuarioEditando.login,
+                senha: this.usuarioEditando.senha,
+                pessoaFisicaTipo: {
+                    id: this.usuarioEditando.pessoaFisicaTipo.id
+                },
+                perfilAcesso: {
+                    id: this.usuarioEditando.perfilAcesso.id
+                }
+            },
+            pessoa: {
+                nome: this.usuarioEditando.pessoa.nome,
+                telefone: this.usuarioEditando.pessoa.telefone,
+                email: this.usuarioEditando.pessoa.email,
+                dataValidade: this.usuarioEditando.pessoa.dataValidade,
+                endereco: {
+                    logradouro: this.usuarioEditando.pessoa.endereco.logradouro,
+                    cep: this.usuarioEditando.pessoa.endereco.cep,
+                    complemento: this.usuarioEditando.pessoa.endereco.complemento,
+                    numeroCasa: this.usuarioEditando.pessoa.endereco.numeroCasa,
+                    cidade: {
+                        id: this.usuarioEditando.pessoa.endereco.cidade.id,
+                        nome: this.usuarioEditando.pessoa.endereco.cidade.nome,
+                        uf: {
+                            id: this.usuarioEditando.pessoa.endereco.cidade.uf.id,
+                            nome: this.usuarioEditando.pessoa.endereco.cidade.uf.nome,
+                            sigla: this.usuarioEditando.pessoa.endereco.cidade.uf.sigla
+                        }
+                    }
+                }
+            }
+        };
+
+        this.http.put(`${environment.url}/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
+
+            () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Usuário atualizado com sucesso!',
+                    life: 3000
+                });
+                this.fecharModalEdicao();
+                this.loadDemoData();
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Falha ao atualizar usuário',
+                    life: 3000
+                });
+            }
+        );
+    }
+
+    onDelete(product: Product) {
+        this.confirmationService.confirm({
+            message: `Tem certeza que deseja excluir ${product.pessoa.nome}?`,
+            header: 'Confirmar Exclusão',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                this.http.delete(`${environment.url}/fisicas/deletar/${product.id}`).subscribe(
+
+                    () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Excluído',
+                            detail: 'Excluído com sucesso',
+                            life: 3000
+                        });
+                        this.loadDemoData();
+                    },
+                    (error) => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Erro',
+                            detail: 'Não foi possível excluir',
+                            life: 3000
+                        });
+                    }
+                );
+            }
+        });
+    }
+
+    getNovoUsuario(): Product {
+        return {
+            id: 0,
+            cpf: '',
+            celular: '',
+            login: '',
+            senha: '',
+            pessoaFisicaTipo: {
+                id: 0,
+                descricao: ''
+            },
+            perfilAcesso: {
+                id: 0,
+                descricao: ''
+            },
+            pessoa: {
+                id: 0,
+                nome: '',
+                telefone: '',
+                email: '',
+                dataCadastro: '',
+                dataValidade: [0, 0, 0],
+                endereco: {
+                    id: 0,
+                    logradouro: '',
+                    cep: '',
+                    complemento: '',
+                    numeroCasa: 0,
+                    cidade: {
+                        id: 0,
+                        nome: '',
+                        uf: {
+                            id: 0,
+                            nome: '',
+                            sigla: ''
+                        }
+                    }
+                },
+                pessoaStatus: {
+                    id: 0,
+                    descricao: ''
+                }
+            }
+        };
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +7,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -63,11 +63,12 @@ interface Product {
 @Component({
     selector: 'app-crud',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule,NgxMaskDirective],
+    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule, NgxMaskDirective, TableModule],
     templateUrl: './crud.component.html',
-    providers: [MessageService, ConfirmationService, DialogService,provideNgxMask()]
+    providers: [MessageService, ConfirmationService, DialogService, provideNgxMask()]
 })
 export class Crud implements OnInit {
+    @ViewChild('dt') dt! : Table;
     products = signal<Product[]>([]);
     exibirModalEdicao = false;
     exibirModalVisualizar = false;
@@ -93,17 +94,12 @@ export class Crud implements OnInit {
         private router: Router
     ) {}
 
-    exportCSV() {
-        this.exportCSV();
-    }
-
     ngOnInit() {
         this.loadDemoData();
     }
 
     loadDemoData() {
         this.http.get<Product[]>(`${environment.url}/pessoas/fisicas`).subscribe(
-
             (data) => {
                 this.products.set(data);
                 this.dadosFiltrados.set(data); // Inicializa os dados filtrados com os dados carregados
@@ -125,7 +121,6 @@ export class Crud implements OnInit {
         );
     }
 
-
     filtrarDados() {
         if (!this.termoPesquisa) {
             this.dadosFiltrados.set(this.products());
@@ -133,7 +128,7 @@ export class Crud implements OnInit {
         }
 
         const termo = this.termoPesquisa.toLowerCase();
-        const dadosFiltrados = this.products().filter(product => {
+        const dadosFiltrados = this.products().filter((product) => {
             return (
                 product.id.toString().includes(termo) ||
                 product.pessoa.nome.toLowerCase().includes(termo) ||
@@ -144,6 +139,31 @@ export class Crud implements OnInit {
         });
 
         this.dadosFiltrados.set(dadosFiltrados);
+    }
+
+    exportCSV() {
+        const dados = this.dadosFiltrados();
+        if (!dados || dados.length === 0) {
+            console.error('Nenhum dado para exportar.');
+            return;
+        }
+
+        const cabecalho = ['ID', 'Nome', 'CPF', 'Logradouro', 'Perfil de Acesso'];
+        const linhas = dados.map(product => [
+            product.id,
+            product.pessoa.nome,
+            product.cpf,
+            product.pessoa.endereco.logradouro,
+            product.perfilAcesso.descricao
+        ]);
+
+        const csvContent = [cabecalho.join(';'), ...linhas.map(row => row.join(';'))].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'usuarios.csv';
+        link.click();
     }
 
     onNovo() {
@@ -160,7 +180,6 @@ export class Crud implements OnInit {
     }
 
     salvarEdicao() {
-
         const payload = {
             pessoaFisica: {
                 cpf: this.usuarioEditando.cpf,
@@ -198,7 +217,6 @@ export class Crud implements OnInit {
         };
 
         this.http.put(`${environment.url}/pessoas/fisicas/editar/${this.usuarioEditando.id}`, payload).subscribe(
-
             () => {
                 this.messageService.add({
                     severity: 'success',
@@ -229,7 +247,6 @@ export class Crud implements OnInit {
             rejectLabel: 'Não',
             accept: () => {
                 this.http.delete(`${environment.url}/fisicas/deletar/${product.id}`).subscribe(
-
                     () => {
                         this.messageService.add({
                             severity: 'success',

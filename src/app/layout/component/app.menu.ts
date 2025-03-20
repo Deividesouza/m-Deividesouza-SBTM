@@ -47,10 +47,10 @@ export class AppMenu implements OnInit {
                     { label: 'Supervisor OM', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formsupervisor'] },
                     { label: 'Operador OM', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formoperador'] },
                     { label: 'Participante', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formparticipante'] },
-                    { label: 'Listar Administradores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
-                    { label: 'Listar Gestores', icon: 'pi pi-fw pi-id-card', routerLink: ['/empty/empty'] },
-                    { label: 'Listar Supervisores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
-                    { label: 'Listar Operadores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formcredenciada'] },
+                    { label: 'Listar Administradores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
+                    { label: 'Listar Gestores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formgestor'] },
+                    { label: 'Listar Supervisores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formsupervisor'] },
+                    { label: 'Listar Operadores', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formoperador'] },
                 ]
             },
             {
@@ -58,15 +58,15 @@ export class AppMenu implements OnInit {
                 icon: 'pi pi-fw pi-briefcase',
                 routerLink: ['/pages'],
                 items: [
-/*                  {
+                {
                         label: 'Autorização',
                         icon: 'pi pi-fw pi-user',
                         items: [
-                            {
+                        /*    {
                                 label: 'Login',
                                 icon: 'pi pi-fw pi-sign-in',
                                 routerLink: ['/auth/login']
-                            },
+                            },  */
                             {
                                 label: 'Erro',
                                 icon: 'pi pi-fw pi-times-circle',
@@ -78,7 +78,7 @@ export class AppMenu implements OnInit {
                                 routerLink: ['/auth/access']
                             }
                         ]
-                    },     */
+                    },
                     {
                         label: 'Crud',
                         icon: 'pi pi-fw pi-pencil',
@@ -88,122 +88,22 @@ export class AppMenu implements OnInit {
             },
         ];
 
-        switch (perfil) {
-            case '0': // Administrador
-                return menuItems;
-            case '1': // Credenciada
-                return menuItems.map(item => {
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label == 'Credenciada'
-                            )
-                        };
-                    }
-                    if (item.label === 'Paginas') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Crud'
-                            )
-                        }
-                    }
-                    return item;
-                });
-            case '2': // Participante
-                return menuItems.map(item => {
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label === 'Participante'
-                            )
-                        };
-                    }
-                    return item;
-                });
-            case '3': // Operador
-                return menuItems.map(item => {
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Administradores'
-                            )
-                        };
-                    }
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Gestores'
-                            )
-                        };
-                    }
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Supervisores'
-                            )
-                        };
-                    }
-                    if (item.label === 'Paginas') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Crud'
-                            )
-                        }
-                    }
-                    return item;
-                });
-            case '4': // Supervisor
-                return menuItems.map(item => {
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Administradores'
-                            )
-                        };
-                    }
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Gestores'
-                            )
-                        };
-                    }
-                    if (item.label === 'Paginas') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Crud'
-                            )
-                        }
-                    }
-                    return item;
-                });
+        // Definição de permissões por perfil
+        const perfilRestricoes: { [key: string]: string[] } = {
+            '1': ['Listar Administradores', 'Listar Gestores', 'Listar Supervisores','Supervisor OM','Gestor','Operador OM','Listar Operadores','Formulário Cadastro','Formulário Registro','Autorização','Crud'], // participante
+            '2': ['Listar Administradores', 'Listar Gestores', 'Formulário Cadastro'], //
+            '3': [], // Administrador todas as opções
+            '4': ['Listar Administradores'], //
+            '5': ['Listar Administradores','Autorização','Crud'], // Supervisor
+            '6': ['Supervisor OM','Listar Administradores','Listar Supervisores','Autorização','Crud'], // Gestor
+        };
 
-            case '5': // Gestor
-                return menuItems.map(item => {
-                    if (item.label === 'Funcionalidades') {
-                        return {
-                            ...item,
-                            items: item.items?.filter(menuItem =>
-                                menuItem.label !== 'Listar Administradores'
-                            )
-                        };
-                    }
-                    return item;
-                });
-            // Adicione mais casos conforme necessário para outros perfis
-            default:
-                return [];
-        }
+        return menuItems.map(item => ({
+            ...item,
+            items: item.items?.filter(menuItem =>
+                menuItem.label && !perfilRestricoes[perfil || '']?.includes(menuItem.label)
+            ) || []
+        }));
 
     }
 }
