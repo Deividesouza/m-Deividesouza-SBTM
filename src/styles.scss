@@ -6,19 +6,20 @@
 /* Define a fonte padrão do menu */
 .layout-menu {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 /* Estiliza os itens do menu */
 .layout-menu li {
-    padding: 8px 12px;
+    padding: 2px 5px;
 }
 
 /* Estiliza os ícones dentro do menu */
 .layout-menu .pi {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-right: 8px;
-    color: #4CAF50; /* Cor verde para os ícones */
+    color: #3c3e3c; /* Cor verde para os ícones */
 }
 
 /* Estiliza o label do usuário */
@@ -28,3 +29,27 @@
     color: #007bff; /* Azul */
     font-size: 16px;
 }
+
+
+.user-profile-group {
+    background-color: var(--primary-color) !important;
+    color: rgb(62, 111, 224) !important;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.user-info-item, .profile-info-item {
+    color: rgb(62, 111, 224) !important;
+}
+
+.user-info-item .p-menuitem-icon {
+    color: var(--yellow-400) !important;
+}
+
+.profile-info-item .p-menuitem-icon {
+    color: var(--green-400) !important;
+}
+
+
+

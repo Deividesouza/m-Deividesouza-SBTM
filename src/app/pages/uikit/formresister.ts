@@ -188,7 +188,6 @@ export class Formresister {
             formData.append('file', this.selectedFile);
 
             // Faz o upload do arquivo
-            //this.http.post('http://localhost:9090/pessoas/cadastrar', formData).subscribe(
             this.http.post('http://localhost:8080/pessoas/cadastrar', formData).subscribe(
 
                 (response) => {

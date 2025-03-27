@@ -15,6 +15,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
 import { environment } from '../../../environments/environment';
+import { DropdownModule } from 'primeng/dropdown';
 
 interface Product {
     id: number;
@@ -56,14 +57,17 @@ interface Product {
         pessoaStatus: {
             id: number;
             descricao: string;
+
         };
     };
 }
 
+
+
 @Component({
     selector: 'app-crud',
     standalone: true,
-    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule, NgxMaskDirective, TableModule],
+    imports: [CommonModule, FormsModule, ButtonModule, RippleModule, ToastModule, ToolbarModule, InputTextModule, TableModule, HttpClientModule, DialogModule, ConfirmDialogModule, NgxMaskDirective, TableModule,DropdownModule],
     templateUrl: './crud.component.html',
     providers: [MessageService, ConfirmationService, DialogService, provideNgxMask()]
 })
@@ -74,6 +78,18 @@ export class Crud implements OnInit {
     exibirModalVisualizar = false;
     termoPesquisa = '';
     dadosFiltrados = signal<Product[]>([]);
+    selectedState: any;
+    dropdownCidade: any;
+    selectedCidade: any;
+    vardropdownCidades: any;
+    selectedPerfil: any;
+    selectedTipo: any;
+    vardropdownPerfis: any;
+    vardropdownTipos: any;
+    selectedStatus: any;
+    vardropdownStatus: any;
+    vardropdownItems: any;
+    dropdownItems: any;
 
     onView(product: Product) {
         this.usuarioVisualizando = JSON.parse(JSON.stringify(product));
@@ -93,10 +109,50 @@ export class Crud implements OnInit {
         private confirmationService: ConfirmationService,
         private router: Router
     ) {}
-
+/*
     ngOnInit() {
         this.loadDemoData();
     }
+*/
+    ngOnInit(): void {
+        this.loadDemoData();
+
+        this.carregarStatus();
+        this.carregarPerfil();
+        this.carregarTipos();
+        this.carregarUF(); // Carrega os estados primeiro
+
+        // Depois que os estados carregarem, carrega as cidades
+        this.dropdownItems.getUF().subscribe({
+            next: (data: any[]) => {
+                this.vardropdownItems = data.map((uf) => ({
+                    name: uf.nome,
+                    code: uf.id
+                }));
+
+                // Se estiver editando, seleciona o estado atual
+                if (this.usuarioEditando?.pessoa?.endereco?.cidade?.uf?.id) {
+                    this.selectedState = this.vardropdownItems.find(
+                        (                        uf: { code: number; }) => uf.code === this.usuarioEditando.pessoa.endereco.cidade.uf.id
+                    );
+                    this.carregarCidadesPorEstado();
+                }
+            }
+        });
+    }
+    carregarStatus() {
+        throw new Error('Method not implemented.');
+    }
+    carregarPerfil() {
+        throw new Error('Method not implemented.');
+    }
+    carregarTipos() {
+        throw new Error('Method not implemented.');
+    }
+    carregarUF() {
+        throw new Error('Method not implemented.');
+    }
+
 
     loadDemoData() {
         this.http.get<Product[]>(`${environment.url}/pessoas/fisicas`).subscribe(
@@ -166,12 +222,41 @@ export class Crud implements OnInit {
         link.click();
     }
 
+
+    carregarCidadesPorEstado() {
+        if (this.selectedState) {
+            this.dropdownCidade.getCidadesPorEstado(this.selectedState.code).subscribe({
+                next: (data: any[]) => {
+                    this.vardropdownCidades = data.map((cidade) => ({
+                        name: cidade.nome,
+                        code: cidade.id
+                    }));
+                    // Seleciona a cidade atual do usuário
+                    if (this.usuarioEditando?.pessoa?.endereco?.cidade?.id) {
+                        this.selectedCidade = this.vardropdownCidades.find(
+                            (                            c: { code: number; }) => c.code === this.usuarioEditando.pessoa.endereco.cidade.id
+                        );
+                    }
+                },
+                error: (err: any) => {
+                    console.error('Erro ao carregar cidades:', err);
+                }
+            });
+        }
+    }
+
+
+
     onNovo() {
         this.router.navigate(['/uikit/formlayout']);
     }
 
     onEdit(product: Product) {
         this.usuarioEditando = JSON.parse(JSON.stringify(product));
+        // definindo os dropdowns
+    //    this.selectedPerfil = this.vardropdownPerfis.find((p: { code: number; }) => p.code === product.perfilAcesso.id);
+    //    this.selectedTipo = this.vardropdownTipos.find((t: { code: number; }) => t.code === product.pessoaFisicaTipo.id);
+    //    this.selectedStatus = this.vardropdownStatus.find((s: { code: number; }) => s.code === product.pessoa.pessoaStatus.id);
         this.exibirModalEdicao = true;
     }
 
@@ -187,10 +272,12 @@ export class Crud implements OnInit {
                 login: this.usuarioEditando.login,
                 senha: this.usuarioEditando.senha,
                 pessoaFisicaTipo: {
-                    id: this.usuarioEditando.pessoaFisicaTipo.id
+                    pessoaFisicaTipo: { id: this.selectedTipo.code }
+                    //id: this.usuarioEditando.pessoaFisicaTipo.id
                 },
                 perfilAcesso: {
-                    id: this.usuarioEditando.perfilAcesso.id
+                    perfilAcesso: { id: this.selectedPerfil.code },
+                    //id: this.usuarioEditando.perfilAcesso.id
                 }
             },
             pessoa: {

@@ -21,15 +21,15 @@ import { AuthService } from '../service/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-    selector: 'app-formlayout',
+    selector: 'app-formgestorcadastro',
     standalone: true,
     providers: [MessageService, provideNgxMask()],
     imports: [InputTextModule, FluidModule, ButtonModule, DropdownModule, FormsModule, TextareaModule, FileUploadModule, ToastModule, ToolbarModule, NgxMaskDirective],
-    templateUrl:'formlayout.componente.html' ,
+    templateUrl:'formgestorcadastro.componente.html' ,
 
 
 })
-export class FormLayout implements OnInit {
+export class FormGestorCadastro implements OnInit {
 
     [x: string]: any;
     nome: string = '';
@@ -141,13 +141,30 @@ export class FormLayout implements OnInit {
     carregarPerfil(): void {
         this.dropdownPerfil.getPerfil().subscribe({
             next: (data: any[]) => {
-                this.vardropdownPerfis = data.map((perfil) => ({
-                    name: perfil.descricao,
-                    code: perfil.id
-                }));
+                this.vardropdownPerfis = data
+                    .filter(perfil => perfil.id === 1 || perfil.id === 4 || perfil.id === 5 || perfil.id === 6) // [Participante 1, Operador 4, Supervisor 5, Gestor 6] pelos IDs desejados
+                    .map((perfil) => ({
+                        name: perfil.descricao,
+                        code: perfil.id
+                    }));
+
+                if (this.vardropdownPerfis.length === 0) {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'Aviso',
+                        detail: 'Nenhum perfil disponível para cadastro',
+                        life: 3000
+                    });
+                }
             },
             error: (err: any) => {
-                console.error('Erro ao carregar perfil:', err);
+                console.error('Erro ao carregar perfis:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Falha ao carregar perfis',
+                    life: 3000
+                });
             }
         });
     }
@@ -155,13 +172,22 @@ export class FormLayout implements OnInit {
     carregarTipos(): void {
         this.dropdownTipos.getTipos().subscribe({
             next: (data: any[]) => {
-                this.vardropdownTipos = data.map((tipos) => ({
-                    name: tipos.descricao,
-                    code: tipos.id
-                }));
+                // Filtra apenas os tipos desejados (ajuste os IDs conforme sua regra de negócio)
+                this.vardropdownTipos = data
+                    .filter(tipo => [1, 4, 5, 6].includes(tipo.id)) //  [Participante 1, Operador 4, Supervisor 5, Gestor 6] pelos IDs desejados
+                    .map((tipos) => ({
+                        name: tipos.descricao,
+                        code: tipos.id
+                    }));
             },
             error: (err: any) => {
-                console.error('Erro ao carregar perfil:', err);
+                console.error('Erro ao carregar tipos:', err);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível carregar os tipos de pessoa',
+                    life: 3000
+                });
             }
         });
     }
@@ -217,7 +243,7 @@ export class FormLayout implements OnInit {
     }
 
     onVoltar() {
-        this.router.navigate(['/pages/crud']);
+        this.router.navigate(['/uikit/formgestor']);
     }
 
     reloadPage() {
@@ -254,6 +280,24 @@ export class FormLayout implements OnInit {
                 }
             );
         }
+
+            // Validação do perfil
+        if (this.selectedPerfil?.code !== 1 && this.selectedPerfil?.code !== 4 && this.selectedPerfil?.code !== 5 && this.selectedPerfil?.code !== 6) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Selecione um perfil válido (Administrador ou Operador OM)',
+                life: 3000
+            });
+            return;
+        }
+
+        // Restante do código de envio...
+        const payload = {
+            // ... outros campos ...
+            perfilAcesso: { id: this.selectedPerfil?.code }
+        };
+
 
         const pessoaData = {
             pessoa: {

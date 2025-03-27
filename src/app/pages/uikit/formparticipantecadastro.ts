@@ -21,15 +21,15 @@ import { AuthService } from '../service/auth.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-    selector: 'app-formlayout',
+    selector: 'app-formparticipantecadastro',
     standalone: true,
     providers: [MessageService, provideNgxMask()],
     imports: [InputTextModule, FluidModule, ButtonModule, DropdownModule, FormsModule, TextareaModule, FileUploadModule, ToastModule, ToolbarModule, NgxMaskDirective],
-    templateUrl:'formlayout.componente.html' ,
+    templateUrl:'formparticipantecadastro.componente.html' ,
 
 
 })
-export class FormLayout implements OnInit {
+export class FormParticipanteCadastro implements OnInit {
 
     [x: string]: any;
     nome: string = '';
@@ -83,9 +83,8 @@ export class FormLayout implements OnInit {
         private readonly router: Router,
         private authService: AuthService
     ) {}
-
     ngOnInit(): void {
-        this.inicializarFormulario();
+
         this.carregarStatus();
         this.carregarPerfil();
         this.carregarTipos();
@@ -93,36 +92,7 @@ export class FormLayout implements OnInit {
         this.carregarUF();
     }
 
-    inicializarFormulario() {
-        this.formulario = this.fb.group({
-            // Outros campos do formulário...
-            informacoesProfissionais: this.fb.array([]) // Inicializa um FormArray vazio
-        });
-        // Adiciona um campo de informação profissional inicial
-        this.adicionarInformacaoProfissional();
-    }
 
-    get informacoesProfissionais(): FormArray {
-        return this.formulario.get('informacoesProfissionais') as FormArray;
-    }
-
-    adicionarInformacaoProfissional() {
-        const informacaoProfissionalGroup = this.fb.group({
-            nomeempresa: [''],
-            cnpj: [''],
-            telefoneempresa: [''],
-            emailempresa: [''],
-            tipoinstituicao: [''],
-            descricao: [''],
-            logradouroempresa: [''],
-            complementoempresa: ['']
-        });
-        this.informacoesProfissionais.push(informacaoProfissionalGroup);
-    }
-
-    removerInformacaoProfissional(index: number) {
-        this.informacoesProfissionais.removeAt(index);
-    }
 
     carregarStatus(): void {
         this.dropdownStatus.getStatus().subscribe({
@@ -141,10 +111,18 @@ export class FormLayout implements OnInit {
     carregarPerfil(): void {
         this.dropdownPerfil.getPerfil().subscribe({
             next: (data: any[]) => {
-                this.vardropdownPerfis = data.map((perfil) => ({
-                    name: perfil.descricao,
-                    code: perfil.id
-                }));
+                // Filtra apenas o perfil de Participante (código 1 no seu exemplo)
+                this.vardropdownPerfis = data
+                    .filter(perfil => perfil.id === 1) // Filtra apenas o perfil com ID 1
+                    .map((perfil) => ({
+                        name: perfil.descricao,
+                        code: perfil.id
+                    }));
+
+                // Define automaticamente o perfil como Participante
+                if (this.vardropdownPerfis.length > 0) {
+                    this.selectedPerfil = this.vardropdownPerfis[0];
+                }
             },
             error: (err: any) => {
                 console.error('Erro ao carregar perfil:', err);
@@ -155,13 +133,18 @@ export class FormLayout implements OnInit {
     carregarTipos(): void {
         this.dropdownTipos.getTipos().subscribe({
             next: (data: any[]) => {
-                this.vardropdownTipos = data.map((tipos) => ({
+                this.vardropdownTipos = data
+                    .filter(tipos => tipos.id === 1) // Filtra apenas o perfil com ID 1
+                    .map((tipos) => ({
                     name: tipos.descricao,
                     code: tipos.id
                 }));
+                if (this.vardropdownTipos.length > 0) {
+                    this.selectedTipo = this.vardropdownTipos[0];
+                }
             },
             error: (err: any) => {
-                console.error('Erro ao carregar perfil:', err);
+                console.error('Erro ao carregar tipos:', err);
             }
         });
     }
@@ -216,9 +199,6 @@ export class FormLayout implements OnInit {
         }
     }
 
-    onVoltar() {
-        this.router.navigate(['/pages/crud']);
-    }
 
     reloadPage() {
         window.location.reload();
@@ -235,7 +215,7 @@ export class FormLayout implements OnInit {
                 informacoesProfissionais: this.formulario.value.informacoesProfissionais
             };
 
-            this.http.post(`${environment.url}/pessoas/fisicas/cadastrar`, payload).subscribe(
+            this.http.post(`${environment.url}/pessoas/participantes/cadastrar`, payload).subscribe(
                 (response) => {
                     this.messageService.add({
                         severity: 'success',
@@ -274,12 +254,14 @@ export class FormLayout implements OnInit {
                 celular: this.celular,
                 login: this.login,
                 senha: this.senha,
-                pessoaFisicaTipo: { id: this.selectedTipo?.code },
-                perfilAcesso: { id: this.selectedPerfil?.code }
+                    //  pessoaFisicaTipo: { id: this.selectedTipo?.code },
+                pessoaFisicaTipo: { id:1},
+                    //  perfilAcesso: { id: this.selectedPerfil?.code },
+                perfilAcesso: { id:1}  //participante
             }
         };
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        this.http.post('http://localhost:8080/pessoas/cadastrar', pessoaData, { headers }).subscribe(
+        this.http.post(`${environment.url}/pessoas/participantes/cadastrar`, pessoaData, { headers }).subscribe(
 
             (response) => {
                 this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });

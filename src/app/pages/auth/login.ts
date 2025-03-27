@@ -36,8 +36,16 @@ import { environment } from '../../../environments/environment';
                                         <label for="rememberme1">Lembrar senha</label>
                                     </div>
                                 </div>
+
                                 <p-button label="Entrar" styleClass="w-full" (click)="realizarLogin()"></p-button>
                                 <div *ngIf="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</div>
+
+                                <div class="p-d-flex p-jc-center p-mt-4">
+                                    <div class="p-text-center mt-4">
+                                        <span>Não tem conta? </span>
+                                    </div>
+                                    <p-button label="Cadastre-se" styleClass="w-full mt-2" severity="info" (click)="redirecionarParaCadastro()"></p-button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -80,15 +88,19 @@ export class Login {
         });
     }
 
+    redirecionarParaCadastro() {
+        this.router.navigate(['/uikit/formparticipantecadastro']); // Redireciona para a rota de cadastro
+    }
+
     redirecionarPorPerfil(perfilId: number) {
         const rotasPorPerfil: { [key: number]: string } = {
             0: '/pages/crud',
-            1: '/uikit/formparticipante', // usuario administrador perfil participante
+            1: '/uikit/formparticipante', // perfil participante
             2: '/uikit/formparticipante', // usuario administradorjr perfil preposto
-            3: '/uikit/formoperador',   //
-            4: '/uikit/formsupervisor',
-            5: '/pages/crud'  // usuario supervisorsenior supervisor / usuario supervisor perfil gestor
-
+            3: '/uikit/formadministrador',   // perfil administrador
+            4: '/uikit/formoperador', // formoperador
+            5: '/uikit/formsupervisor',
+            6: '/uikit/formgestor',
         };
 
         const rotaDestino = rotasPorPerfil[perfilId] || '/pages/crud';
