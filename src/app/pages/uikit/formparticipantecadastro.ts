@@ -49,9 +49,25 @@ export class FormParticipanteCadastro implements OnInit {
     logradouroempresa: string = '';
     complemento: string = '';
     complementoempresa: string = '';
-    descricao: string = '';
+    descricaoempresa: string = '';
     cep: string = '';
+    datapraca: string = '';
+    datanascimento: string = '';
+    postgrade: string = '';
+    databaixa: string = '';
     tipoinstituicao: string = '';
+    nomeempresa: string = '';
+    cargo: string = '';
+    datainicioemprego: string = '';
+    datasaidaemprego: string = '';
+    instituicao: string = '';
+    curso: string = '';
+    nivel:  string = '';
+    emailinstituicao: string = '';
+    telefoneinstituicao: string = '';
+    datainiciocurso: string = '';
+    dataconclusaocurso: string = '';
+    ativareserva: string = '';
     selectedState: any = null;
     selectedCidade: any = null;
     selectedPerfil: any = null;
@@ -66,6 +82,8 @@ export class FormParticipanteCadastro implements OnInit {
     vardropdownTipos: any[] = [];
     vardropdownStatus: any[] = [];
     vardropdownPerfis: any[] = [];
+    vardropdownpostgrad: any[] = [];
+    vardropdownativareserva: any[] = [];
     uploadedFiles: any[] = [];
     selectedFile: File | null = null;
 
@@ -81,7 +99,7 @@ export class FormParticipanteCadastro implements OnInit {
         private readonly dropdownCidade: Cidadesservice,
         private readonly dropdownItems: UFservice,
         private readonly router: Router,
-        private authService: AuthService
+        private readonly authService: AuthService
     ) {}
     ngOnInit(): void {
 
@@ -258,6 +276,34 @@ export class FormParticipanteCadastro implements OnInit {
                 pessoaFisicaTipo: { id:1},
                     //  perfilAcesso: { id: this.selectedPerfil?.code },
                 perfilAcesso: { id:1}  //participante
+            },
+            pessoaparticipante:{
+                dataPraca: this.datapraca,
+                dataNasc: this.datanascimento,
+                dataBaixa: this.databaixa,
+                postgrad: this.postgrade,
+                ativaReserva: this.vardropdownativareserva,
+                    formacoesacademicas:{
+                        instituicao: this.instituicao,
+                        curso: this.curso,
+                        nivel: this.nivel,
+                        anoInicio: this.datainiciocurso,
+                        anoConclusao: this.dataconclusaocurso,
+                        email: this.emailinstituicao,
+                        telefone: this.telefoneinstituicao,
+                    },
+                    experiencias:{
+
+                            empresa: this.nomeempresa,
+                            cargo: this.cargo,
+                            dataInicio: this.datainicioemprego,
+                            dataFim: this.datasaidaemprego,
+                            email:this.emailempresa ,
+                            telefone: this.telefoneempresa,
+                            descricao: this.descricaoempresa,
+
+                    }
+
             }
         };
         const headers = new HttpHeaders().set('Content-Type', 'application/json');

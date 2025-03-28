@@ -51,6 +51,10 @@
                     <label for="state">Status</label>
                     <p-dropdown id="state" [(ngModel)]="selectedStatus" [options]="vardropdownStatus" optionLabel="name" placeholder="Selecione um Status" class="w-full"> </p-dropdown>
                 </div>
+                <div class="flex flex-wrap gap-2 w-full">
+                    <label for="state">Ativa / Reserva</label>
+                    <p-dropdown id="state" [(ngModel)]="ativareserva" [options]="vardropdownativareserva" optionLabel="name" placeholder="Selecione um Status" class="w-full"> </p-dropdown>
+                </div>
             </div>
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="flex flex-col gap-2 w-full">
@@ -66,24 +70,24 @@
                 <div class="flex flex-col gap-1 w-full">
                     <label for="datavalidade">Data de Praça :</label>
                     <p-toolbar styleClass="mb-2">
-                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                        <input type="date" id="datapraca" [(ngModel)]="datapraca" />
                     </p-toolbar>
                 </div>
                 <div class="flex flex-col gap-1 w-full">
                     <label for="datavalidade">Data de Nascimento :</label>
                     <p-toolbar styleClass="mb-2">
-                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                        <input type="date" id="datanascimento" [(ngModel)]="datanascimento" />
                     </p-toolbar>
                 </div>
                 <div class="flex flex-col gap-1 w-full">
                     <label for="datavalidade">Data de Baixa :</label>
                     <p-toolbar styleClass="mb-2">
-                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                        <input type="date" id="databaixa" [(ngModel)]="databaixa" />
                     </p-toolbar>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full">
-                    <label for="state">Posto / Graduação</label>
-                    <p-dropdown id="state" [(ngModel)]="selectedCidade" [options]="vardropdownCidades" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-dropdown>
+                    <label for="postograde">Posto / Graduação</label>
+                    <p-dropdown id="post/grade" [(ngModel)]="postgrade" [options]="vardropdownpostgrad" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-dropdown>
                 </div>
             </div>
         <hr class="custom-hr">
@@ -115,24 +119,24 @@
                 <div class="font-semibold text-xl">Informações Profissionais</div>
                 <div class="flex flex-col gap-2">
                     <label for="nomeempresa">Nome da Empresa</label>
-                    <input pInputText id="nomeempresa" type="text" />
+                    <input pInputText id="nomeempresa" [(ngModel)]="nomeempresa" type="text" />
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="cnpj">Cargo</label>
-                        <input pInputText id="cnpj" mask="CPF_CNPJ" [(ngModel)]="cnpj" type="text" />
+                        <label for="cargo">Cargo</label>
+                        <input pInputText id="cargo"  [(ngModel)]="cargo" type="text" />
                     </div>
                     <div class="flex flex-col gap-1 w-full">
                         <label for="datavalidade">Data de Inicio :</label>
                         <p-toolbar styleClass="mb-2">
-                            <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                            <input type="date" id="datainicioemprego" [(ngModel)]="datainicioemprego" />
                         </p-toolbar>
                     </div>
                     <div class="flex flex-col gap-1 w-full">
                         <label for="datavalidade">Data de Saida :</label>
                         <p-toolbar styleClass="mb-2">
-                            <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                            <input type="date" id="datasaidaemprego" [(ngModel)]="datasaidaemprego" />
                         </p-toolbar>
                     </div>
                     <div class="flex flex-col gap-2 w-full">
@@ -146,47 +150,10 @@
 
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="descricao">Descrição ({{ descricao.length }} de 500 characters):</label>
-                    <textarea pInputText id="descricao" [(ngModel)]="descricao" type="text" maxlength="500" size="500" (input)="atualizarContador()"></textarea>
+                    <label for="descricao">Descrição ({{ descricaoempresa.length }} de 500 characters):</label>
+                    <textarea pInputText id="descricao" [(ngModel)]="descricaoempresa" type="text" maxlength="500" size="500" (input)="atualizarContador()"></textarea>
                 </div>
 
-                <div formArrayName="informacoesProfissionais">
-         <!--           <div *ngFor="let info of informacoesProfissionais.controls; let i = index" [formGroupName]="i">   -->
-                    <div *NgFor="let info of informacoesProfissionais.controls; let i = index" >
-
-                        <div class="p-fluid grid">
-                            <div class="field col-12 md:col-6">
-                                <label for="nomeempresa{{i}}">Nome da Empresa</label>
-                                <input pInputText id="nomeempresa{{i}}" formControlName="nomeempresa" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <label for="cnpj{{i}}">CNPJ</label>
-                                <input pInputText id="cnpj{{i}}" formControlName="cnpj" mask="CPF_CNPJ" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <label for="telefoneempresa{{i}}">Telefone da Empresa</label>
-                                <input pInputText id="telefoneempresa{{i}}" formControlName="telefoneempresa" mask="(00) 0000-0000" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <label for="emailempresa{{i}}">Email da Empresa</label>
-                                <input pInputText id="emailempresa{{i}}" formControlName="emailempresa" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <label for="tipoinstituicao{{i}}">Tipo de Instituição</label>
-                                <input pInputText id="tipoinstituicao{{i}}" formControlName="tipoinstituicao" />
-                            </div>
-                            <div class="field col-12">
-                                <p-button
-                                    label="Remover"
-                                    icon="pi pi-trash"
-                                    severity="danger"
-
-                                ></p-button>
-                            </div>
-                        </div>
-                        <hr class="custom-hr">
-                    </div>
-                </div>
                 <div class="p-fluid grid">
                     <div class="field w-full">
                         <p-button
@@ -208,43 +175,43 @@
                 <div class="flex w-full md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
                         <label for="tipoinstituicao">Instituição</label>
-                        <input pInputText id="tipoinstituicao" [(ngModel)]="tipoinstituicao" type="text" />
+                        <input pInputText id="instituicao" [(ngModel)]="instituicao" type="text" />
                     </div>
                 </div>
                 <div class="flex w-full md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="tipoinstituicao">Curso</label>
-                        <input pInputText id="tipoinstituicao" [(ngModel)]="tipoinstituicao" type="text" />
+                        <label for="curso">Curso</label>
+                        <input pInputText id="curso" [(ngModel)]="curso" type="text" />
                     </div>
                 </div>
                 <div class="flex w-full md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="tipoinstituicao">Nivel</label>
-                        <input pInputText id="tipoinstituicao" [(ngModel)]="tipoinstituicao" type="text" />
+                        <label for="nivel">Nivel</label>
+                        <input pInputText id="nivel" [(ngModel)]="nivel" type="text" />
                     </div>
                 </div>
                 <div class="flex w-full md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="tipoinstituicao">Email</label>
-                        <input pInputText id="tipoinstituicao" [(ngModel)]="tipoinstituicao" type="text" />
+                        <label for="emailinstituicao">Email</label>
+                        <input pInputText id="emailinstituicao" [(ngModel)]="emailinstituicao" type="text" />
                     </div>
                 </div>
                 <div class="flex w-full md:flex-row gap-6">
                     <div class="flex flex-col gap-2 w-full">
-                        <label for="tipoinstituicao">Telefone</label>
-                        <input pInputText id="tipoinstituicao" [(ngModel)]="tipoinstituicao" type="text" />
+                        <label for="telefoneinstituicao">Telefone</label>
+                        <input pInputText id="telefoneinstituicao" [(ngModel)]="telefoneinstituicao" type="text" />
                     </div>
                 </div>
                 <div class="flex flex-col gap-1 w-full">
-                    <label for="datavalidade">Ano de Inicio:</label>
+                    <label for="datainiciocurso">Ano de Inicio:</label>
                     <p-toolbar styleClass="mb-2">
-                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                        <input type="date" id="datainiciocurso" [(ngModel)]="datainiciocurso" />
                     </p-toolbar>
                 </div>
                 <div class="flex flex-col gap-1 w-full">
-                    <label for="datavalidade">Ano da conclusão :</label>
+                    <label for="dataconclusaocurso">Ano da conclusão :</label>
                     <p-toolbar styleClass="mb-2">
-                        <input type="date" id="datavalidade" [(ngModel)]="datavalidade" />
+                        <input type="date" id="dataconclusaocurso" [(ngModel)]="dataconclusaocurso" />
                     </p-toolbar>
                 </div>
                 <p-toolbar>
