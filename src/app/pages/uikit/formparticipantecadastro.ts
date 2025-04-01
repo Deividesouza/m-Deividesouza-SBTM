@@ -204,7 +204,7 @@ export class FormParticipanteCadastro implements OnInit {
             const formData = new FormData();
             formData.append('file', this.selectedFile);
             // Faz o upload do arquivo
-            this.http.post('http://localhost:8080/pessoas/cadastrar', formData).subscribe(
+            this.http.post('${environment.url}/pessoas/participantes/cadastrar', formData).subscribe(
                 (response) => {
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso!' });
                 },
@@ -226,32 +226,7 @@ export class FormParticipanteCadastro implements OnInit {
         // Esta função é chamada sempre que o valor do input muda
         // O contador é atualizado automaticamente devido ao binding {{ descricao.length }}
     }
-    onSubmit() {
-        if (this.formulario.valid) {
-            const payload = {
-                ...this.formulario.value,
-                informacoesProfissionais: this.formulario.value.informacoesProfissionais
-            };
-
-            this.http.post(`${environment.url}/pessoas/participantes/cadastrar`, payload).subscribe(
-                (response) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Sucesso',
-                        detail: 'Cadastro realizado com sucesso!',
-                        life: 3000
-                    });
-                },
-                (error) => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Erro',
-                        detail: 'Erro ao cadastrar!',
-                        life: 3000
-                    });
-                }
-            );
-        }
+    async onSubmit() {
 
         const pessoaData = {
             pessoa: {
@@ -277,7 +252,7 @@ export class FormParticipanteCadastro implements OnInit {
                     //  perfilAcesso: { id: this.selectedPerfil?.code },
                 perfilAcesso: { id:1}  //participante
             },
-            pessoaparticipante:{
+            pessoaFisicaParticipante:{
                 dataPraca: this.datapraca,
                 dataNasc: this.datanascimento,
                 dataBaixa: this.databaixa,
@@ -306,16 +281,47 @@ export class FormParticipanteCadastro implements OnInit {
 
             }
         };
-        const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        this.http.post(`${environment.url}/pessoas/participantes/cadastrar`, pessoaData, { headers }).subscribe(
 
-            (response) => {
-                this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Cadastro realizado com sucesso!' });
-                this.reloadPage();
-            },
-            (error) => {
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cadastrar!' });
+
+        try {
+            // Envia dados básicos primeiro
+            const response = await this.http.post<any>(
+                `${environment.url}/pessoas/participantes/cadastrar`,
+                pessoaData
+            ).toPromise();
+
+            // 2. Se tiver arquivo selecionado, enviar após cadastro
+            if (this.selectedFile) {
+                const formData = new FormData();
+                formData.append('file', this.selectedFile);
+                formData.append('participanteId', response.id); // ID retornado do cadastro
+
+                await this.http.post(
+                    `${environment.url}/api/curriculos/upload`,
+                    formData
+                ).toPromise();
+
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Cadastro e currículo enviados com sucesso!'
+                });
+            } else {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Cadastro realizado (sem currículo)'
+                });
             }
-        );
+
+            this.reloadPage();
+        } catch (error) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro no cadastro'
+            });
+            console.error('Erro:', error);
+        }
     }
 }
