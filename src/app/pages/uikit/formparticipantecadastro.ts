@@ -15,6 +15,8 @@ import { PerfilService } from '../service/perfil.service';
 import { Tiposservice } from '../service/tipos.service';
 import { Cidadesservice } from '../service/cidades.service';
 import { UFservice } from '../service/uf.service';
+import { PostoGraducacaoService } from '../service/postograducacao.service';
+import { AtivaReservaService } from '../service/ativareserva.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; //para a mascara
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
@@ -77,7 +79,7 @@ export class FormParticipanteCadastro implements OnInit {
     selectedCidadepj: any = null;
 
 
-    vardropdownItems: any[] = [];
+    vardropdownUF: any[] = [];
     vardropdownCidades: any[] = [];
     vardropdownTipos: any[] = [];
     vardropdownStatus: any[] = [];
@@ -97,7 +99,9 @@ export class FormParticipanteCadastro implements OnInit {
         private readonly dropdownPerfil: PerfilService,
         private readonly dropdownTipos: Tiposservice,
         private readonly dropdownCidade: Cidadesservice,
-        private readonly dropdownItems: UFservice,
+        private readonly dropdownUF: UFservice,
+        private readonly dropdownativareserva: AtivaReservaService,
+        private readonly dropdownpostgrad: PostoGraducacaoService,
         private readonly router: Router,
         private readonly authService: AuthService
     ) {}
@@ -108,6 +112,8 @@ export class FormParticipanteCadastro implements OnInit {
         this.carregarTipos();
         this.carregarCidades();
         this.carregarUF();
+        this.carregarAtivaReserva();
+        this.carregarPostoGraduacao();
     }
 
 
@@ -182,9 +188,9 @@ export class FormParticipanteCadastro implements OnInit {
     }
 
     carregarUF(): void {
-        this.dropdownItems.getUF().subscribe({
+        this.dropdownUF.getUF().subscribe({
             next: (data: any[]) => {
-                this.vardropdownItems = data.map((uf) => ({
+                this.vardropdownUF = data.map((uf) => ({
                     name: uf.nome,
                     code: uf.id
                 }));
@@ -195,6 +201,35 @@ export class FormParticipanteCadastro implements OnInit {
         });
     }
 
+    carregarPostoGraduacao(): void {
+        this.dropdownpostgrad.getPostoGraducacao().subscribe({
+            next: (data: any[]) => {
+                this.vardropdownpostgrad = data.map((postograd) => ({
+                    name: postograd.descricao,
+                    code: postograd.id
+                }));
+            },
+            error: (err: any) => {
+                console.error('Erro ao carregar perfil:', err);
+            }
+        });
+    }
+
+    carregarAtivaReserva(): void {
+        this.dropdownativareserva.getAtivaReserva().subscribe({
+            next: (data: any[]) => {
+                this.vardropdownativareserva = data.map((ativareserva) => ({
+                    name: ativareserva.descricao,
+                    code: ativareserva.id
+                }));
+            },
+            error: (err: any) => {
+                console.error('Erro ao carregar perfil:', err);
+            }
+        });
+    }
+
+
     onFileSelected(event: any) {
         this.selectedFile = event.target.files[0] as File;
     }
@@ -204,7 +239,7 @@ export class FormParticipanteCadastro implements OnInit {
             const formData = new FormData();
             formData.append('file', this.selectedFile);
             // Faz o upload do arquivo
-            this.http.post('${environment.url}/pessoas/participantes/cadastrar', formData).subscribe(
+            this.http.post(`${environment.url}/pessoas/participantes/cadastrar`, formData).subscribe(
                 (response) => {
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Arquivo enviado com sucesso!' });
                 },
