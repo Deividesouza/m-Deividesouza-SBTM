@@ -55,7 +55,7 @@ export class FormParticipanteCadastro implements OnInit {
     cep: string = '';
     datapraca: string = '';
     datanascimento: string = '';
-    postgrade: string = '';
+    postgrade: any = null;
     databaixa: string = '';
     tipoinstituicao: string = '';
     nomeempresa: string = '';
@@ -69,7 +69,7 @@ export class FormParticipanteCadastro implements OnInit {
     telefoneinstituicao: string = '';
     datainiciocurso: string = '';
     dataconclusaocurso: string = '';
-    ativareserva: string = '';
+    ativareserva: any = null;
     selectedState: any = null;
     selectedCidade: any = null;
     selectedPerfil: any = null;
@@ -291,9 +291,10 @@ export class FormParticipanteCadastro implements OnInit {
                 dataPraca: this.datapraca,
                 dataNasc: this.datanascimento,
                 dataBaixa: this.databaixa,
-                postgrad: this.postgrade,
-                ativaReserva: this.vardropdownativareserva,
-                    formacoesacademicas:{
+                postoGraduacao: {id: this.postgrade?.code},
+                ativaReserva: {id: this.ativareserva?.code},
+                formacoesAcademicas:[
+                    {
                         instituicao: this.instituicao,
                         curso: this.curso,
                         nivel: this.nivel,
@@ -301,8 +302,10 @@ export class FormParticipanteCadastro implements OnInit {
                         anoConclusao: this.dataconclusaocurso,
                         email: this.emailinstituicao,
                         telefone: this.telefoneinstituicao,
-                    },
-                    experiencias:{
+                    }
+                ],
+                    experiencia:[
+                    {
 
                             empresa: this.nomeempresa,
                             cargo: this.cargo,
@@ -313,7 +316,7 @@ export class FormParticipanteCadastro implements OnInit {
                             descricao: this.descricaoempresa,
 
                     }
-
+                ]
             }
         };
 

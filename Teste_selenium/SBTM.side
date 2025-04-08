@@ -1,0 +1,21 @@
+{
+  "id": "17b022b9-a200-419b-82d2-a69f157acfa3",
+  "version": "2.0",
+  "name": "SBTM",
+  "url": "",
+  "tests": [{
+    "id": "f3bd074d-f4ff-40bd-bd65-2295136bc7a6",
+    "name": "Untitled",
+    "commands": []
+  }],
+  "suites": [{
+    "id": "522e72fa-a39f-4d3b-b1d8-ea3a767d2260",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["f3bd074d-f4ff-40bd-bd65-2295136bc7a6"]
+  }],
+  "urls": [],
+  "plugins": []
+}

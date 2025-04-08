@@ -52,8 +52,8 @@
                     <p-dropdown id="state" [(ngModel)]="selectedStatus" [options]="vardropdownStatus" optionLabel="name" placeholder="Selecione um Status" class="w-full"> </p-dropdown>
                 </div>
                 <div class="flex flex-wrap gap-2 w-full">
-                    <label for="state">Ativa / Reserva</label>
-                    <p-dropdown id="state" [(ngModel)]="ativareserva" [options]="vardropdownativareserva" optionLabel="name" placeholder="Selecione um Status" class="w-full"> </p-dropdown>
+                    <label for="ativareserva">Ativa / Reserva</label>
+                    <p-dropdown id="ativareserva" [(ngModel)]="ativareserva" [options]="vardropdownativareserva" optionLabel="name" placeholder="Ativa ou Reserva" class="w-full"> </p-dropdown>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row gap-6">
@@ -87,7 +87,7 @@
                 </div>
                 <div class="flex flex-wrap gap-2 w-full">
                     <label for="postograde">Posto / Graduação</label>
-                    <p-dropdown id="post/grade" [(ngModel)]="postgrade" [options]="vardropdownpostgrad" optionLabel="name" placeholder="Selecione uma cidade" class="w-full"></p-dropdown>
+                    <p-dropdown id="post/grade" [(ngModel)]="postgrade" [options]="vardropdownpostgrad" optionLabel="name" placeholder="Selecione Seu Posto ou Graduação" class="w-full"></p-dropdown>
                 </div>
             </div>
         <hr class="custom-hr">
@@ -219,7 +219,6 @@
                         <input type="file" (change)="onFileSelected($event)" />
                         <p-button label="Upload" (click)="onUpload()"></p-button>
                 </p-toolbar>
-
                 <p-toolbar styleClass="mb-6">
                     <ng-template #start>
                         <p-button label="Cadastrar" icon="pi pi-check" severity="primary" class="mr-2" (click)="onSubmit()"></p-button>
